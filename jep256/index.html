@@ -79,7 +79,9 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#jep256">JEP256</a></li>
+                <li class="toctree-l3"><a href="#jep259-stack-walking-api">JEP259 - Stack-Walking API</a></li>
+                
+                    <li><a class="toctree-l4" href="#stackwalker">StackWalker</a></li>
                 
             
             </ul>
@@ -153,7 +155,43 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="jep256">JEP256<a class="headerlink" href="#jep256" title="Permanent link">&para;</a></h1>
+                <h1 id="jep259-stack-walking-api">JEP259 - Stack-Walking API<a class="headerlink" href="#jep259-stack-walking-api" title="Permanent link">&para;</a></h1>
+<p>This <a href="http://openjdk.java.net/jeps/259">JEP</a> is flagged wit <strong>core</strong>.</p>
+<p>All source codes I am using here you could find under </p>
+<p><a href="https://github.com/java-9/workshop_java09/tree/develop/src/org/rapidpm/workshop/java09/jep259">github - java-9 / workshop_java09</a></p>
+<h2 id="stackwalker">StackWalker<a class="headerlink" href="#stackwalker" title="Permanent link">&para;</a></h2>
+<p>The StackWalker will give you the information about the caller tree of your ethod you are just in.
+To get an instance of the StackWalcker you can use a few <code>getIntance(..)</code> methods.</p>
+<p>For this examples I created a class <code>Holder</code> to create a Stack you could walk through.</p>
+<pre><code class="java"> public static class Holder {
+    private Holder holder;
+
+    public Holder(final Holder holder) {
+      this.holder = holder;
+    }
+    public void doWork() {
+      if (Objects.isNull(holder)) {
+        System.out.println(&quot;end reached..&quot;);
+        StackWalker.getInstance().forEach(System.out::println);
+      } else {
+        holder.doWork();
+      }
+    }
+  }
+</code></pre>
+
+<p>With this we are creating a well defined stack now.</p>
+<pre><code class="java">    new Holder(new Holder(new Holder(null) )).doWork();
+</code></pre>
+
+<p>The output here will be something like the following. Have in mind that I was starting this from inside IntelliJ</p>
+<pre><code class="text">end reached..
+org.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:39)
+org.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:41)
+org.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:41)
+org.rapidpm.workshop.java09.jep259.JEP259V001.main(JEP259V001.java:25)
+com.intellij.rt.execution.application.AppMain.main(AppMain.java:147)
+</code></pre>
               
             </div>
           </div>
