@@ -113,6 +113,8 @@ takeWhileParallel = [9]
 
 ### public static<T> Stream<T> ofNullable(T t)
 
+
+
 ### public static<T> Stream<T> iterate(T seed, Predicate<? super T> hasNext, UnaryOperator<T> next)
 
 ## Collectors
@@ -123,5 +125,6 @@ takeWhileParallel = [9]
 
 ## IntStream
 same as Stream
+
 ### public static IntStream iterate(int seed, IntPredicate hasNext, IntUnaryOperator next)
 

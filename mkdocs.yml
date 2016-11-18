@@ -15,7 +15,7 @@ pages:
 - JEP102: jep102.md
 - JEP256: jep256.md
 
-- java.lang: 
+- java.lang:
     - 'StrictMath' : 'java.lang/StrictMath.md'
-- java.util.streams: 
-    - 'Streams': 'java.util.streams/Stream.md'
+- java.util.streams:
+    - 'Streams' : 'java.util.streams/Stream.md'
