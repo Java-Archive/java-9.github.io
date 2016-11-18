@@ -79,7 +79,7 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#jep259-stack-walking-api">JEP259 - Stack-Walking API</a></li>
+                <li class="toctree-l3"><a href="#stack-walking-api">Stack-Walking API</a></li>
                 
                     <li><a class="toctree-l4" href="#stackwalker">StackWalker</a></li>
                 
@@ -155,7 +155,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="jep259-stack-walking-api">JEP259 - Stack-Walking API<a class="headerlink" href="#jep259-stack-walking-api" title="Permanent link">&para;</a></h1>
+                <h1 id="stack-walking-api">Stack-Walking API<a class="headerlink" href="#stack-walking-api" title="Permanent link">&para;</a></h1>
 <p>This <a href="http://openjdk.java.net/jeps/259">JEP</a> is flagged wit <strong>core</strong>.</p>
 <p>All source codes I am using here you could find under </p>
 <p><a href="https://github.com/java-9/workshop_java09/tree/develop/src/org/rapidpm/workshop/java09/jep259">github - java-9 / workshop_java09</a></p>
@@ -191,6 +191,81 @@ org.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:41)
 org.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:41)
 org.rapidpm.workshop.java09.jep259.JEP259V001.main(JEP259V001.java:25)
 com.intellij.rt.execution.application.AppMain.main(AppMain.java:147)
+</code></pre>
+
+<h3 id="more-detailed-informations">more detailed informations<a class="headerlink" href="#more-detailed-informations" title="Permanent link">&para;</a></h3>
+<p>You could get more informations out of the StackWalker as you saw before.
+For this the class Holder will be extended now a little bit more.</p>
+<pre><code class="java"> public static class Holder002 {
+    private Holder002 holder;
+
+    public Holder002(final Holder002 holder) {
+      this.holder = holder;
+    }
+    public void doWork() {
+      if (Objects.isNull(holder)) {
+        System.out.println(&quot;end reached..&quot;);
+        StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+            .forEach(stackFrame -&gt; {
+              final int byteCodeIndex = stackFrame.getByteCodeIndex();
+              System.out.println(&quot;byteCodeIndex = &quot; + byteCodeIndex);
+              // byteCode Index :
+              final String className = stackFrame.getClassName();
+              System.out.println(&quot;className = &quot; + className);
+              final Class&lt;?&gt; declaringClass = stackFrame.getDeclaringClass();
+              System.out.println(&quot;declaringClass = &quot; + declaringClass);
+              final String fileName = stackFrame.getFileName();
+              System.out.println(&quot;fileName = &quot; + fileName);
+              final int lineNumber = stackFrame.getLineNumber();
+              System.out.println(&quot;lineNumber = &quot; + lineNumber);
+              final String methodName = stackFrame.getMethodName();
+              System.out.println(&quot;methodName = &quot; + methodName);
+            });
+      } else {
+        holder.doWork();
+      }
+    }
+  }
+</code></pre>
+
+<p>Here we have to use the first time a defined <code>getInstance(..)</code> method to get all informations. 
+If you are not using the right <code>StackWalker.Option</code> the result will be an exception.
+You have three Options.</p>
+<ul>
+<li>
+<p><strong><em>RETAIN_CLASS_REFERENCE:</em></strong> getCallerClass() and getDeclaringClass() will work</p>
+</li>
+<li>
+<p><strong><em>SHOW_REFLECT_FRAMES:</em></strong> This will show all reflections frames that are hidden by default</p>
+</li>
+<li>
+<p><strong><em>SHOW_HIDDEN_FRAMES:</em></strong> This will show all reflection frames and additionally implementation specific internal frames</p>
+</li>
+</ul>
+<p>Two things are not used in this example.
+First is the method <code>isNativeMethod()</code> to identify if the caller method in the stack is a JVM native one 
+and second <code>toStackTraceElement()</code> to convert this information to a StackTraceElement that you 
+could use to generate a more detailed Exception-Message.</p>
+<h3 id="filter-the-stack">filter the stack<a class="headerlink" href="#filter-the-stack" title="Permanent link">&para;</a></h3>
+<p>Sometime you will have to filter a few of this information out that is given by the StackWalker.
+For this you can work with the stream as done before at other places. The method <code>walk(..)</code> will 
+give you the possibility to add a Predicate that will be used to filter the result.
+Here I only want to have all elements from a specific namespace. 
+(btw: the method ``takeWhile()```  is new too, check for this the section about Streams)</p>
+<pre><code class="java">StackWalker
+            .getInstance()
+            .walk(sfStream -&gt; sfStream
+                .takeWhile(frame -&gt; frame.getClassName().startsWith(&quot;org.rapidpm&quot;))
+                .collect(Collectors.toList()))
+            .forEach(System.out::println);
+</code></pre>
+
+<h3 id="sometimes-you-only-want-to-know">sometimes you only want to know...<a class="headerlink" href="#sometimes-you-only-want-to-know" title="Permanent link">&para;</a></h3>
+<p>Yes, sometimes you only want to know the caller class. Don´t worry, there is a simple solution.</p>
+<pre><code class="java">final Class&lt;?&gt; callerClass = StackWalker
+        .getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE) //Option needed
+        .getCallerClass();
+    System.out.println(&quot;callerClass = &quot; + callerClass);
 </code></pre>
               
             </div>
