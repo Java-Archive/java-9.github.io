@@ -2,43 +2,68 @@
     "docs": [
         {
             "location": "/", 
-            "text": "Welcome to java-9.org\n\n\nHere I want to decribe the new things from Java9 compared to Java8. I will organize the most stuff with the corresponding JEP\u00b4s.", 
+            "text": "Welcome to java-9.org\n\n\nHere I want to describe the new things from Java9 compared to Java8. \nI will organize the most stuff with the corresponding JEP\u00b4s.\n\n\nCorresponding to this website I am creating demo codes that are available under\n\n\ngithub - java-9 / workshop_java09", 
             "title": "Home"
         }, 
         {
             "location": "/#welcome-to-java-9org", 
-            "text": "Here I want to decribe the new things from Java9 compared to Java8. I will organize the most stuff with the corresponding JEP\u00b4s.", 
+            "text": "Here I want to describe the new things from Java9 compared to Java8. \nI will organize the most stuff with the corresponding JEP\u00b4s.  Corresponding to this website I am creating demo codes that are available under  github - java-9 / workshop_java09", 
             "title": "Welcome to java-9.org"
         }, 
         {
             "location": "/jep102/", 
-            "text": "JEP256", 
+            "text": "JEP 102 - Process API Updates\n\n\nThis \nJEP\n is flagged with \ncore-lang\n.\n\n\njava.lang.ProcessBuilder\n\n\npublic static final Redirect DISCARD\n\n\njava.lang.Process\n\n\npublic boolean supportsNormalTermination()\n\n\npublic long getPid()\n\n\npublic CompletableFuture\n onExit()\n\n\npublic ProcessHandle toHandle()\n\n\npublic ProcessHandle.Info info()\n\n\npublic Stream\n children()\n\n\npublic Stream\n descendants()\n\n\njava.lang.ProcessHandle\n\n\njava.lang.Process\n\n\npublic boolean supportsNormalTermination()\n\n\npublic long getPid()\n\n\npublic CompletableFuture\n onExit()\n\n\npublic ProcessHandle toHandle()\n\n\npublic ProcessHandle.Info info()\n\n\npublic Stream\n children()\n\n\npublic Stream\n descendants()", 
             "title": "JEP102"
         }, 
         {
-            "location": "/jep102/#jep256", 
+            "location": "/jep102/#jep-102-process-api-updates", 
+            "text": "This  JEP  is flagged with  core-lang .", 
+            "title": "JEP 102 - Process API Updates"
+        }, 
+        {
+            "location": "/jep102/#javalangprocessbuilder", 
+            "text": "public static final Redirect DISCARD", 
+            "title": "java.lang.ProcessBuilder"
+        }, 
+        {
+            "location": "/jep102/#javalangprocess", 
+            "text": "public boolean supportsNormalTermination()  public long getPid()  public CompletableFuture  onExit()  public ProcessHandle toHandle()  public ProcessHandle.Info info()  public Stream  children()  public Stream  descendants()", 
+            "title": "java.lang.Process"
+        }, 
+        {
+            "location": "/jep102/#javalangprocesshandle", 
             "text": "", 
-            "title": "JEP256"
+            "title": "java.lang.ProcessHandle"
+        }, 
+        {
+            "location": "/jep102/#javalangprocess_1", 
+            "text": "public boolean supportsNormalTermination()  public long getPid()  public CompletableFuture  onExit()  public ProcessHandle toHandle()  public ProcessHandle.Info info()  public Stream  children()  public Stream  descendants()", 
+            "title": "java.lang.Process"
         }, 
         {
             "location": "/jep256/", 
-            "text": "JEP256", 
+            "text": "JEP259 - Stack-Walking API\n\n\nThis \nJEP\n is flagged wit \ncore\n.\n\n\nAll source codes I am using here you could find under \n\n\ngithub - java-9 / workshop_java09\n\n\nStackWalker\n\n\nThe StackWalker will give you the information about the caller tree of your ethod you are just in.\nTo get an instance of the StackWalcker you can use a few \ngetIntance(..)\n methods.\n\n\nFor this examples I created a class \nHolder\n to create a Stack you could walk through.\n\n\n public static class Holder {\n    private Holder holder;\n\n    public Holder(final Holder holder) {\n      this.holder = holder;\n    }\n    public void doWork() {\n      if (Objects.isNull(holder)) {\n        System.out.println(\nend reached..\n);\n        StackWalker.getInstance().forEach(System.out::println);\n      } else {\n        holder.doWork();\n      }\n    }\n  }\n\n\n\n\nWith this we are creating a well defined stack now.\n\n\n    new Holder(new Holder(new Holder(null) )).doWork();\n\n\n\n\nThe output here will be something like the following. Have in mind that I was starting this from inside IntelliJ\n\n\nend reached..\norg.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:39)\norg.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:41)\norg.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:41)\norg.rapidpm.workshop.java09.jep259.JEP259V001.main(JEP259V001.java:25)\ncom.intellij.rt.execution.application.AppMain.main(AppMain.java:147)", 
             "title": "JEP256"
         }, 
         {
-            "location": "/jep256/#jep256", 
-            "text": "", 
-            "title": "JEP256"
+            "location": "/jep256/#jep259-stack-walking-api", 
+            "text": "This  JEP  is flagged wit  core .  All source codes I am using here you could find under   github - java-9 / workshop_java09", 
+            "title": "JEP259 - Stack-Walking API"
+        }, 
+        {
+            "location": "/jep256/#stackwalker", 
+            "text": "The StackWalker will give you the information about the caller tree of your ethod you are just in.\nTo get an instance of the StackWalcker you can use a few  getIntance(..)  methods.  For this examples I created a class  Holder  to create a Stack you could walk through.   public static class Holder {\n    private Holder holder;\n\n    public Holder(final Holder holder) {\n      this.holder = holder;\n    }\n    public void doWork() {\n      if (Objects.isNull(holder)) {\n        System.out.println( end reached.. );\n        StackWalker.getInstance().forEach(System.out::println);\n      } else {\n        holder.doWork();\n      }\n    }\n  }  With this we are creating a well defined stack now.      new Holder(new Holder(new Holder(null) )).doWork();  The output here will be something like the following. Have in mind that I was starting this from inside IntelliJ  end reached..\norg.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:39)\norg.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:41)\norg.rapidpm.workshop.java09.jep259.JEP259V001$Holder.doWork(JEP259V001.java:41)\norg.rapidpm.workshop.java09.jep259.JEP259V001.main(JEP259V001.java:25)\ncom.intellij.rt.execution.application.AppMain.main(AppMain.java:147)", 
+            "title": "StackWalker"
         }, 
         {
             "location": "/java.lang/StrictMath/", 
-            "text": "JEP256", 
+            "text": "New Methods in java.lang.StrictMath\n\n\nThe class itself is inside the JDK since 1.3.\n\n\npublic static long multiplyExact(long x, int y)\n\n\npublic static long multiplyFull(int x, int y)\n\n\npublic static long multiplyHigh(long x, long y)\n\n\npublic static long floorDiv(long x, int y)\n\n\npublic static int floorMod(long x, int y)\n\n\npublic static double fma(double a, double b, double c)\n\n\npublic static float fma(float a, float b, float c)", 
             "title": "StrictMath"
         }, 
         {
-            "location": "/java.lang/StrictMath/#jep256", 
-            "text": "", 
-            "title": "JEP256"
+            "location": "/java.lang/StrictMath/#new-methods-in-javalangstrictmath", 
+            "text": "The class itself is inside the JDK since 1.3.  public static long multiplyExact(long x, int y)  public static long multiplyFull(int x, int y)  public static long multiplyHigh(long x, long y)  public static long floorDiv(long x, int y)  public static int floorMod(long x, int y)  public static double fma(double a, double b, double c)  public static float fma(float a, float b, float c)", 
+            "title": "New Methods in java.lang.StrictMath"
         }, 
         {
             "location": "/java.util.streams/Stream/", 
