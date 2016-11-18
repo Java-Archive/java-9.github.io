@@ -76,11 +76,9 @@
                 
                     <li><a class="toctree-l4" href="#javalangprocessbuilder">java.lang.ProcessBuilder</a></li>
                 
-                    <li><a class="toctree-l4" href="#javalangprocess">java.lang.Process</a></li>
-                
                     <li><a class="toctree-l4" href="#javalangprocesshandle">java.lang.ProcessHandle</a></li>
                 
-                    <li><a class="toctree-l4" href="#javalangprocess_1">java.lang.Process</a></li>
+                    <li><a class="toctree-l4" href="#javalangprocess">java.lang.Process</a></li>
                 
             
             </ul>
@@ -172,6 +170,51 @@
 <p>This <a href="http://openjdk.java.net/jeps/102">JEP</a> is flagged with <strong>core-lang</strong>.</p>
 <h2 id="javalangprocessbuilder">java.lang.ProcessBuilder<a class="headerlink" href="#javalangprocessbuilder" title="Permanent link">&para;</a></h2>
 <h3 id="public-static-final-redirect-discard">public static final Redirect DISCARD<a class="headerlink" href="#public-static-final-redirect-discard" title="Permanent link">&para;</a></h3>
+<p>If you are using the ProcessBuilder, you could define where 
+the output will be redirected.
+New here in Java 9 is <code>dev/null</code> ;-)</p>
+<p>First we are writing all to the stdout.</p>
+<pre><code class="java">public static void main(String[] args) {
+    final ProcessBuilder processBuilder = new ProcessBuilder();
+    // only if installed
+    final ProcessBuilder command = processBuilder.command(&quot;java&quot;, &quot;-version&quot;); 
+    try {
+      command
+          .inheritIO()
+          .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+          .redirectError(ProcessBuilder.Redirect.INHERIT);
+      final Process start = command.start();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+  }
+</code></pre>
+
+<p>In this version you will see something like the following.</p>
+<pre><code class="text">java version &quot;1.8.0_112&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_112-b16)
+Java HotSpot(TM) 64-Bit Server VM (build 25.112-b16, mixed mode)
+</code></pre>
+
+<p>If we are the new redirect we will see..... nothing...</p>
+<pre><code class="java">public static void main(String[] args) {
+    final ProcessBuilder processBuilder = new ProcessBuilder();
+    final ProcessBuilder command = processBuilder.command(&quot;java&quot;, &quot;-version&quot;); // only if installed
+    try {
+      command
+          .inheritIO()
+          .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+          .redirectError(ProcessBuilder.Redirect.DISCARD);
+      final Process start = command.start();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+</code></pre>
+
+<h2 id="javalangprocesshandle">java.lang.ProcessHandle<a class="headerlink" href="#javalangprocesshandle" title="Permanent link">&para;</a></h2>
+<h3 id="processhandleinfo">ProcessHandle.Info<a class="headerlink" href="#processhandleinfo" title="Permanent link">&para;</a></h3>
 <h2 id="javalangprocess">java.lang.Process<a class="headerlink" href="#javalangprocess" title="Permanent link">&para;</a></h2>
 <h3 id="public-boolean-supportsnormaltermination">public boolean supportsNormalTermination()<a class="headerlink" href="#public-boolean-supportsnormaltermination" title="Permanent link">&para;</a></h3>
 <h3 id="public-long-getpid">public long getPid()<a class="headerlink" href="#public-long-getpid" title="Permanent link">&para;</a></h3>
@@ -180,15 +223,6 @@
 <h3 id="public-processhandleinfo-info">public ProcessHandle.Info info()<a class="headerlink" href="#public-processhandleinfo-info" title="Permanent link">&para;</a></h3>
 <h3 id="public-stream-children">public Stream<ProcessHandle> children()<a class="headerlink" href="#public-stream-children" title="Permanent link">&para;</a></h3>
 <h3 id="public-stream-descendants">public Stream<ProcessHandle> descendants()<a class="headerlink" href="#public-stream-descendants" title="Permanent link">&para;</a></h3>
-<h2 id="javalangprocesshandle">java.lang.ProcessHandle<a class="headerlink" href="#javalangprocesshandle" title="Permanent link">&para;</a></h2>
-<h2 id="javalangprocess_1">java.lang.Process<a class="headerlink" href="#javalangprocess_1" title="Permanent link">&para;</a></h2>
-<h3 id="public-boolean-supportsnormaltermination_1">public boolean supportsNormalTermination()<a class="headerlink" href="#public-boolean-supportsnormaltermination_1" title="Permanent link">&para;</a></h3>
-<h3 id="public-long-getpid_1">public long getPid()<a class="headerlink" href="#public-long-getpid_1" title="Permanent link">&para;</a></h3>
-<h3 id="public-completablefuture-onexit_1">public CompletableFuture<Process> onExit()<a class="headerlink" href="#public-completablefuture-onexit_1" title="Permanent link">&para;</a></h3>
-<h3 id="public-processhandle-tohandle_1">public ProcessHandle toHandle()<a class="headerlink" href="#public-processhandle-tohandle_1" title="Permanent link">&para;</a></h3>
-<h3 id="public-processhandleinfo-info_1">public ProcessHandle.Info info()<a class="headerlink" href="#public-processhandleinfo-info_1" title="Permanent link">&para;</a></h3>
-<h3 id="public-stream-children_1">public Stream<ProcessHandle> children()<a class="headerlink" href="#public-stream-children_1" title="Permanent link">&para;</a></h3>
-<h3 id="public-stream-descendants_1">public Stream<ProcessHandle> descendants()<a class="headerlink" href="#public-stream-descendants_1" title="Permanent link">&para;</a></h3>
               
             </div>
           </div>
