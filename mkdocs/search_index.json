@@ -12,7 +12,7 @@
         }, 
         {
             "location": "/jep102/", 
-            "text": "Process API Updates\n\n\nThis \nJEP\n is flagged with \ncore-lang\n.\n\n\njava.lang.ProcessBuilder\n\n\npublic static final Redirect DISCARD\n\n\njava.lang.Process\n\n\npublic boolean supportsNormalTermination()\n\n\npublic long getPid()\n\n\npublic CompletableFuture\n onExit()\n\n\npublic ProcessHandle toHandle()\n\n\npublic ProcessHandle.Info info()\n\n\npublic Stream\n children()\n\n\npublic Stream\n descendants()\n\n\njava.lang.ProcessHandle\n\n\njava.lang.Process\n\n\npublic boolean supportsNormalTermination()\n\n\npublic long getPid()\n\n\npublic CompletableFuture\n onExit()\n\n\npublic ProcessHandle toHandle()\n\n\npublic ProcessHandle.Info info()\n\n\npublic Stream\n children()\n\n\npublic Stream\n descendants()", 
+            "text": "Process API Updates\n\n\nThis \nJEP\n is flagged with \ncore-lang\n.\n\n\njava.lang.ProcessBuilder\n\n\npublic static final Redirect DISCARD\n\n\nIf you are using the ProcessBuilder, you could define where \nthe output will be redirected.\nNew here in Java 9 is \ndev/null\n ;-)\n\n\nFirst we are writing all to the stdout.\n\n\npublic static void main(String[] args) {\n    final ProcessBuilder processBuilder = new ProcessBuilder();\n    // only if installed\n    final ProcessBuilder command = processBuilder.command(\njava\n, \n-version\n); \n    try {\n      command\n          .inheritIO()\n          .redirectOutput(ProcessBuilder.Redirect.INHERIT)\n          .redirectError(ProcessBuilder.Redirect.INHERIT);\n      final Process start = command.start();\n    } catch (IOException e) {\n      e.printStackTrace();\n    }\n\n  }\n\n\n\n\nIn this version you will see something like the following.\n\n\njava version \n1.8.0_112\n\nJava(TM) SE Runtime Environment (build 1.8.0_112-b16)\nJava HotSpot(TM) 64-Bit Server VM (build 25.112-b16, mixed mode)\n\n\n\n\nIf we are the new redirect we will see..... nothing...\n\n\npublic static void main(String[] args) {\n    final ProcessBuilder processBuilder = new ProcessBuilder();\n    final ProcessBuilder command = processBuilder.command(\njava\n, \n-version\n); // only if installed\n    try {\n      command\n          .inheritIO()\n          .redirectOutput(ProcessBuilder.Redirect.DISCARD)\n          .redirectError(ProcessBuilder.Redirect.DISCARD);\n      final Process start = command.start();\n    } catch (IOException e) {\n      e.printStackTrace();\n    }\n  }\n\n\n\n\njava.lang.ProcessHandle\n\n\nProcessHandle.Info\n\n\njava.lang.Process\n\n\npublic boolean supportsNormalTermination()\n\n\npublic long getPid()\n\n\npublic CompletableFuture\n onExit()\n\n\npublic ProcessHandle toHandle()\n\n\npublic ProcessHandle.Info info()\n\n\npublic Stream\n children()\n\n\npublic Stream\n descendants()", 
             "title": "JEP102"
         }, 
         {
@@ -22,21 +22,16 @@
         }, 
         {
             "location": "/jep102/#javalangprocessbuilder", 
-            "text": "public static final Redirect DISCARD", 
+            "text": "public static final Redirect DISCARD  If you are using the ProcessBuilder, you could define where \nthe output will be redirected.\nNew here in Java 9 is  dev/null  ;-)  First we are writing all to the stdout.  public static void main(String[] args) {\n    final ProcessBuilder processBuilder = new ProcessBuilder();\n    // only if installed\n    final ProcessBuilder command = processBuilder.command( java ,  -version ); \n    try {\n      command\n          .inheritIO()\n          .redirectOutput(ProcessBuilder.Redirect.INHERIT)\n          .redirectError(ProcessBuilder.Redirect.INHERIT);\n      final Process start = command.start();\n    } catch (IOException e) {\n      e.printStackTrace();\n    }\n\n  }  In this version you will see something like the following.  java version  1.8.0_112 \nJava(TM) SE Runtime Environment (build 1.8.0_112-b16)\nJava HotSpot(TM) 64-Bit Server VM (build 25.112-b16, mixed mode)  If we are the new redirect we will see..... nothing...  public static void main(String[] args) {\n    final ProcessBuilder processBuilder = new ProcessBuilder();\n    final ProcessBuilder command = processBuilder.command( java ,  -version ); // only if installed\n    try {\n      command\n          .inheritIO()\n          .redirectOutput(ProcessBuilder.Redirect.DISCARD)\n          .redirectError(ProcessBuilder.Redirect.DISCARD);\n      final Process start = command.start();\n    } catch (IOException e) {\n      e.printStackTrace();\n    }\n  }", 
             "title": "java.lang.ProcessBuilder"
         }, 
         {
-            "location": "/jep102/#javalangprocess", 
-            "text": "public boolean supportsNormalTermination()  public long getPid()  public CompletableFuture  onExit()  public ProcessHandle toHandle()  public ProcessHandle.Info info()  public Stream  children()  public Stream  descendants()", 
-            "title": "java.lang.Process"
-        }, 
-        {
             "location": "/jep102/#javalangprocesshandle", 
-            "text": "", 
+            "text": "ProcessHandle.Info", 
             "title": "java.lang.ProcessHandle"
         }, 
         {
-            "location": "/jep102/#javalangprocess_1", 
+            "location": "/jep102/#javalangprocess", 
             "text": "public boolean supportsNormalTermination()  public long getPid()  public CompletableFuture  onExit()  public ProcessHandle toHandle()  public ProcessHandle.Info info()  public Stream  children()  public Stream  descendants()", 
             "title": "java.lang.Process"
         }, 
