@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>StrictMath - Java-9.org</title>
+  <title>StackTraceElement - Java-9.org</title>
   
 
   <link rel="shortcut icon" href="../../img/favicon.ico">
@@ -20,7 +20,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "StrictMath";
+    var mkdocs_page_name = "StackTraceElement";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js"></script>
@@ -86,36 +86,22 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../StackTraceElement/">StackTraceElement</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">StackTraceElement</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#new-methods-in-javalangstacktraceelement">New Methods in java.lang.StackTraceElement</a></li>
+                
+            
+            </ul>
         
     </li>
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">StrictMath</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#new-methods-in-javalangstrictmath">New Methods in java.lang.StrictMath</a></li>
-                
-                    <li><a class="toctree-l4" href="#public-static-long-multiplyexactlong-x-int-y">public static long multiplyExact(long x, int y)</a></li>
-                
-                    <li><a class="toctree-l4" href="#public-static-long-multiplyfullint-x-int-y">public static long multiplyFull(int x, int y)</a></li>
-                
-                    <li><a class="toctree-l4" href="#public-static-long-multiplyhighlong-x-long-y">public static long multiplyHigh(long x, long y)</a></li>
-                
-                    <li><a class="toctree-l4" href="#public-static-long-floordivlong-x-int-y">public static long floorDiv(long x, int y)</a></li>
-                
-                    <li><a class="toctree-l4" href="#public-static-int-floormodlong-x-int-y">public static int floorMod(long x, int y)</a></li>
-                
-                    <li><a class="toctree-l4" href="#public-static-double-fmadouble-a-double-b-double-c">public static double fma(double a, double b, double c)</a></li>
-                
-                    <li><a class="toctree-l4" href="#public-static-float-fmafloat-a-float-b-float-c">public static float fma(float a, float b, float c)</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../StrictMath/">StrictMath</a>
         
     </li>
 
@@ -164,7 +150,7 @@
         
       
     
-    <li>StrictMath</li>
+    <li>StackTraceElement</li>
     <li class="wy-breadcrumbs-aside">
       
         
@@ -178,15 +164,59 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="new-methods-in-javalangstrictmath">New Methods in java.lang.StrictMath<a class="headerlink" href="#new-methods-in-javalangstrictmath" title="Permanent link">&para;</a></h1>
-<p>The class itself is inside the JDK since 1.3.</p>
-<h3 id="public-static-long-multiplyexactlong-x-int-y">public static long multiplyExact(long x, int y)<a class="headerlink" href="#public-static-long-multiplyexactlong-x-int-y" title="Permanent link">&para;</a></h3>
-<h3 id="public-static-long-multiplyfullint-x-int-y">public static long multiplyFull(int x, int y)<a class="headerlink" href="#public-static-long-multiplyfullint-x-int-y" title="Permanent link">&para;</a></h3>
-<h3 id="public-static-long-multiplyhighlong-x-long-y">public static long multiplyHigh(long x, long y)<a class="headerlink" href="#public-static-long-multiplyhighlong-x-long-y" title="Permanent link">&para;</a></h3>
-<h3 id="public-static-long-floordivlong-x-int-y">public static long floorDiv(long x, int y)<a class="headerlink" href="#public-static-long-floordivlong-x-int-y" title="Permanent link">&para;</a></h3>
-<h3 id="public-static-int-floormodlong-x-int-y">public static int floorMod(long x, int y)<a class="headerlink" href="#public-static-int-floormodlong-x-int-y" title="Permanent link">&para;</a></h3>
-<h3 id="public-static-double-fmadouble-a-double-b-double-c">public static double fma(double a, double b, double c)<a class="headerlink" href="#public-static-double-fmadouble-a-double-b-double-c" title="Permanent link">&para;</a></h3>
-<h3 id="public-static-float-fmafloat-a-float-b-float-c">public static float fma(float a, float b, float c)<a class="headerlink" href="#public-static-float-fmafloat-a-float-b-float-c" title="Permanent link">&para;</a></h3>
+                <h1 id="new-methods-in-javalangstacktraceelement">New Methods in java.lang.StackTraceElement<a class="headerlink" href="#new-methods-in-javalangstacktraceelement" title="Permanent link">&para;</a></h1>
+<p>The class itself is inside the JDK since 1.4.</p>
+<p>The StackTraceElement will now have the information about the module and module-version.
+For this they added a new constructor </p>
+<pre><code class="java">public StackTraceElement(String moduleName, 
+                         String moduleVersion,
+                         String declaringClass, 
+                         String methodName,String 
+                         fileName, int lineNumber)
+</code></pre>
+
+<p>and the new getter methods <code>public String getModuleName()</code> and <code>public String getModuleVersion()</code></p>
+<p>If you want to try this, play with the following.</p>
+<pre><code class="java">public static void main(String[] args) {
+    try {
+      throw new RuntimeException(&quot;and go&quot;);
+    } catch (Exception e) {
+      final StackTraceElement[] stackTrace = e.getStackTrace();
+      for (StackTraceElement stackTraceElement : stackTrace) {
+        final String moduleName = stackTraceElement.getModuleName();
+        final String moduleVersion = stackTraceElement.getModuleVersion();
+        System.out.println(&quot;moduleVersion = &quot; + moduleVersion);
+        System.out.println(&quot;moduleName = &quot; + moduleName);
+        System.out.println(stackTraceElement.getClassName() + &quot; - &quot; + stackTraceElement.getMethodName());
+      }
+    }
+  }
+</code></pre>
+
+<p>The output at may machine was the following.</p>
+<pre><code class="text">moduleVersion = null
+moduleName = null
+org.rapidpm.workshop.java09.java.lang.StackTraceElementV001 - main
+moduleVersion = 9-ea
+moduleName = java.base
+jdk.internal.reflect.NativeMethodAccessorImpl - invoke0
+moduleVersion = 9-ea
+moduleName = java.base
+jdk.internal.reflect.NativeMethodAccessorImpl - invoke
+moduleVersion = 9-ea
+moduleName = java.base
+jdk.internal.reflect.DelegatingMethodAccessorImpl - invoke
+moduleVersion = 9-ea
+moduleName = java.base
+java.lang.reflect.Method - invoke
+moduleVersion = null
+moduleName = null
+com.intellij.rt.execution.application.AppMain - main
+</code></pre>
+
+<p>The interesting thing here is, that the first and the last triple is without 
+a module -version and -name.</p>
+<p>Try to find out, why ;-) </p>
               
             </div>
           </div>
@@ -194,10 +224,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../java.util.streams/Stream/" class="btn btn-neutral float-right" title="Streams"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../StrictMath/" class="btn btn-neutral float-right" title="StrictMath"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../StackTraceElement/" class="btn btn-neutral" title="StackTraceElement"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../jep259/" class="btn btn-neutral" title="JEP259"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -225,10 +255,10 @@
           <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../StackTraceElement/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../jep259/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../../java.util.streams/Stream/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../StrictMath/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
