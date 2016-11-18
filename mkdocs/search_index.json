@@ -2,23 +2,13 @@
     "docs": [
         {
             "location": "/", 
-            "text": "Welcome to MkDocs\n\n\nFor full documentation visit \nmkdocs.org\n.\n\n\nCommands\n\n\n\n\nmkdocs new [dir-name]\n - Create a new project.\n\n\nmkdocs serve\n - Start the live-reloading docs server.\n\n\nmkdocs build\n - Build the documentation site.\n\n\nmkdocs help\n - Print this help message.\n\n\n\n\nProject layout\n\n\nmkdocs.yml    # The configuration file.\ndocs/\n    index.md  # The documentation homepage.\n    ...       # Other markdown pages, images and other files.", 
+            "text": "Welcome to java-9.org\n\n\nHere I want to decribe the new things from Java9 compared to Java8. I will organize the most stuff with the corresponding JEP\u00b4s.", 
             "title": "Home"
         }, 
         {
-            "location": "/#welcome-to-mkdocs", 
-            "text": "For full documentation visit  mkdocs.org .", 
-            "title": "Welcome to MkDocs"
-        }, 
-        {
-            "location": "/#commands", 
-            "text": "mkdocs new [dir-name]  - Create a new project.  mkdocs serve  - Start the live-reloading docs server.  mkdocs build  - Build the documentation site.  mkdocs help  - Print this help message.", 
-            "title": "Commands"
-        }, 
-        {
-            "location": "/#project-layout", 
-            "text": "mkdocs.yml    # The configuration file.\ndocs/\n    index.md  # The documentation homepage.\n    ...       # Other markdown pages, images and other files.", 
-            "title": "Project layout"
+            "location": "/#welcome-to-java-9org", 
+            "text": "Here I want to decribe the new things from Java9 compared to Java8. I will organize the most stuff with the corresponding JEP\u00b4s.", 
+            "title": "Welcome to java-9.org"
         }, 
         {
             "location": "/jep102/", 
@@ -39,6 +29,41 @@
             "location": "/jep256/#jep256", 
             "text": "", 
             "title": "JEP256"
+        }, 
+        {
+            "location": "/java.lang/StrictMath/", 
+            "text": "JEP256", 
+            "title": "StrictMath"
+        }, 
+        {
+            "location": "/java.lang/StrictMath/#jep256", 
+            "text": "", 
+            "title": "JEP256"
+        }, 
+        {
+            "location": "/java.util.streams/Stream/", 
+            "text": "New Methods inside the Streams API\n\n\nStream\n\n\nWhat are the news from Java8 to Java9?\n\n\ndefault Stream\n dropWhile(Predicate\n? super T\n predicate)\n\n\n  public static void main(String[] args) {\n    workOn(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});\n    workOn(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});\n    workOn(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});\n    workOn(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});\n    workOnParallel(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});\n    workOnParallel(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});\n    workOnParallel(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});\n    workOnParallel(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});\n  }\n\n  private static void workOn(final Integer[] integers) {\n    final List\nInteger\n collect = Stream\n        .of(integers)\n        .dropWhile(integer -\n integer \n 5)\n        .collect(Collectors.toList());\n    System.out.println(\ndropWhile.isEmpty() = \n + collect.isEmpty());\n    System.out.println(\ndropWhile = \n + collect);\n  }\n  private static void workOnParallel(final Integer[] integers) {\n    final List\nInteger\n collect = Stream\n        .of(integers)\n        .parallel()\n        .dropWhile(integer -\n integer \n 5)\n        .collect(Collectors.toList());\n    System.out.println(\ndropWhileParallel.isEmpty() = \n + collect.isEmpty());\n    System.out.println(\ndropWhileParallel = \n + collect);\n  }\n\n\n\n\nThe result will be.\n\n\ndropWhile.isEmpty() = false\ndropWhile = [1, 2, 3, 4, 5, 6, 7, 8, 9]\ndropWhile.isEmpty() = false\ndropWhile = [5, 4, 3, 2, 1]\ndropWhile.isEmpty() = false\ndropWhile = [1, 9, 2, 8, 3, 7, 4, 6, 5]\ndropWhile.isEmpty() = false\ndropWhile = [1, 8, 2, 7, 3, 6, 4, 5]\ndropWhileParallel.isEmpty() = false\ndropWhileParallel = [1, 2, 3, 4, 5, 6, 7, 8, 9]\ndropWhileParallel.isEmpty() = false\ndropWhileParallel = [5, 4, 3, 2, 1]\ndropWhileParallel.isEmpty() = false\ndropWhileParallel = [1, 9, 2, 8, 3, 7, 4, 6, 5]\ndropWhileParallel.isEmpty() = false\ndropWhileParallel = [1, 8, 2, 7, 3, 6, 4, 5]\n\n\n\n\ndefault Stream\n takeWhile(Predicate\n? super T\n predicate)\n\n\n  public static void main(String[] args) {\n    workOn(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});\n    workOn(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});\n    workOn(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});\n    workOn(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});\n    workOnParallel(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});\n    workOnParallel(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});\n    workOnParallel(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});\n    workOnParallel(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});\n  }\n\n  private static void workOn(final Integer[] integers) {\n    final List\nInteger\n collect = Stream\n        .of(integers)\n        .takeWhile(integer -\n integer \n 5)\n        .collect(Collectors.toList());\n    System.out.println(\ntakeWhile.isEmpty() = \n + collect.isEmpty());\n    System.out.println(\ntakeWhile = \n + collect);\n  }\n  private static void workOnParallel(final Integer[] integers) {\n    final List\nInteger\n collect = Stream\n        .of(integers)\n        .parallel()\n        .takeWhile(integer -\n integer \n 5)\n        .collect(Collectors.toList());\n    System.out.println(\ntakeWhileParallel.isEmpty() = \n + collect.isEmpty());\n    System.out.println(\ntakeWhileParallel = \n + collect);\n  }\n\n\n\n\ntakeWhile.isEmpty() = true\ntakeWhile = []\ntakeWhile.isEmpty() = false\ntakeWhile = [9, 8, 7, 6]\ntakeWhile.isEmpty() = true\ntakeWhile = []\ntakeWhile.isEmpty() = false\ntakeWhile = [9]\ntakeWhileParallel.isEmpty() = true\ntakeWhileParallel = []\ntakeWhileParallel.isEmpty() = false\ntakeWhileParallel = [9, 8, 7, 6]\ntakeWhileParallel.isEmpty() = true\ntakeWhileParallel = []\ntakeWhileParallel.isEmpty() = false\ntakeWhileParallel = [9]\n\n\n\n\npublic static\n Stream\n ofNullable(T t)\n\n\npublic static\n Stream\n iterate(T seed, Predicate\n? super T\n hasNext, UnaryOperator\n next)\n\n\nCollectors\n\n\npublic static \n Collector\n flatMapping(Function\n? super T, ? extends Stream\n? extends U\n mapper,Collector\n? super U, A, R\n downstream)\n\n\npublic static \n Collector\n filtering(Predicate\n? super T\n predicate, Collector\n? super T, A, R\n downstream)\n\n\nIntStream\n\n\nsame as Stream\n\n\npublic static IntStream iterate(int seed, IntPredicate hasNext, IntUnaryOperator next)", 
+            "title": "Streams"
+        }, 
+        {
+            "location": "/java.util.streams/Stream/#new-methods-inside-the-streams-api", 
+            "text": "", 
+            "title": "New Methods inside the Streams API"
+        }, 
+        {
+            "location": "/java.util.streams/Stream/#stream", 
+            "text": "What are the news from Java8 to Java9?  default Stream  dropWhile(Predicate ? super T  predicate)    public static void main(String[] args) {\n    workOn(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});\n    workOn(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});\n    workOn(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});\n    workOn(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});\n    workOnParallel(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});\n    workOnParallel(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});\n    workOnParallel(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});\n    workOnParallel(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});\n  }\n\n  private static void workOn(final Integer[] integers) {\n    final List Integer  collect = Stream\n        .of(integers)\n        .dropWhile(integer -  integer   5)\n        .collect(Collectors.toList());\n    System.out.println( dropWhile.isEmpty() =   + collect.isEmpty());\n    System.out.println( dropWhile =   + collect);\n  }\n  private static void workOnParallel(final Integer[] integers) {\n    final List Integer  collect = Stream\n        .of(integers)\n        .parallel()\n        .dropWhile(integer -  integer   5)\n        .collect(Collectors.toList());\n    System.out.println( dropWhileParallel.isEmpty() =   + collect.isEmpty());\n    System.out.println( dropWhileParallel =   + collect);\n  }  The result will be.  dropWhile.isEmpty() = false\ndropWhile = [1, 2, 3, 4, 5, 6, 7, 8, 9]\ndropWhile.isEmpty() = false\ndropWhile = [5, 4, 3, 2, 1]\ndropWhile.isEmpty() = false\ndropWhile = [1, 9, 2, 8, 3, 7, 4, 6, 5]\ndropWhile.isEmpty() = false\ndropWhile = [1, 8, 2, 7, 3, 6, 4, 5]\ndropWhileParallel.isEmpty() = false\ndropWhileParallel = [1, 2, 3, 4, 5, 6, 7, 8, 9]\ndropWhileParallel.isEmpty() = false\ndropWhileParallel = [5, 4, 3, 2, 1]\ndropWhileParallel.isEmpty() = false\ndropWhileParallel = [1, 9, 2, 8, 3, 7, 4, 6, 5]\ndropWhileParallel.isEmpty() = false\ndropWhileParallel = [1, 8, 2, 7, 3, 6, 4, 5]  default Stream  takeWhile(Predicate ? super T  predicate)    public static void main(String[] args) {\n    workOn(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});\n    workOn(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});\n    workOn(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});\n    workOn(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});\n    workOnParallel(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});\n    workOnParallel(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});\n    workOnParallel(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});\n    workOnParallel(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});\n  }\n\n  private static void workOn(final Integer[] integers) {\n    final List Integer  collect = Stream\n        .of(integers)\n        .takeWhile(integer -  integer   5)\n        .collect(Collectors.toList());\n    System.out.println( takeWhile.isEmpty() =   + collect.isEmpty());\n    System.out.println( takeWhile =   + collect);\n  }\n  private static void workOnParallel(final Integer[] integers) {\n    final List Integer  collect = Stream\n        .of(integers)\n        .parallel()\n        .takeWhile(integer -  integer   5)\n        .collect(Collectors.toList());\n    System.out.println( takeWhileParallel.isEmpty() =   + collect.isEmpty());\n    System.out.println( takeWhileParallel =   + collect);\n  }  takeWhile.isEmpty() = true\ntakeWhile = []\ntakeWhile.isEmpty() = false\ntakeWhile = [9, 8, 7, 6]\ntakeWhile.isEmpty() = true\ntakeWhile = []\ntakeWhile.isEmpty() = false\ntakeWhile = [9]\ntakeWhileParallel.isEmpty() = true\ntakeWhileParallel = []\ntakeWhileParallel.isEmpty() = false\ntakeWhileParallel = [9, 8, 7, 6]\ntakeWhileParallel.isEmpty() = true\ntakeWhileParallel = []\ntakeWhileParallel.isEmpty() = false\ntakeWhileParallel = [9]  public static  Stream  ofNullable(T t)  public static  Stream  iterate(T seed, Predicate ? super T  hasNext, UnaryOperator  next)", 
+            "title": "Stream"
+        }, 
+        {
+            "location": "/java.util.streams/Stream/#collectors", 
+            "text": "public static   Collector  flatMapping(Function ? super T, ? extends Stream ? extends U  mapper,Collector ? super U, A, R  downstream)  public static   Collector  filtering(Predicate ? super T  predicate, Collector ? super T, A, R  downstream)", 
+            "title": "Collectors"
+        }, 
+        {
+            "location": "/java.util.streams/Stream/#intstream", 
+            "text": "same as Stream  public static IntStream iterate(int seed, IntPredicate hasNext, IntUnaryOperator next)", 
+            "title": "IntStream"
         }
     ]
 }

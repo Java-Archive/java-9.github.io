@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Streams - Java-9.org</title>
+  
+
+  <link rel="shortcut icon" href="../../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Streams";
+  </script>
+  
+  <script src="../../js/jquery-2.1.1.min.js"></script>
+  <script src="../../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../../js/highlight.pack.js"></script>
+  <script src="../../js/theme.js"></script> 
+
+  
+  <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-87714600-1', 'java-9.org');
+      ga('send', 'pageview');
+  </script>
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href="../.." class="icon icon-home"> Java-9.org</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../jep102/">JEP102</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../../jep256/">JEP256</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>java.lang</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../../java.lang/StrictMath/">StrictMath</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>java.util.streams</span></li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Streams</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#new-methods-inside-the-streams-api">New Methods inside the Streams API</a></li>
+                
+                    <li><a class="toctree-l4" href="#stream">Stream</a></li>
+                
+                    <li><a class="toctree-l4" href="#collectors">Collectors</a></li>
+                
+                    <li><a class="toctree-l4" href="#intstream">IntStream</a></li>
+                
+            
+            </ul>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../..">Java-9.org</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>java.util.streams &raquo;</li>
+        
+      
+    
+    <li>Streams</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="https://github.com/java-9/java-9.github.io" class="icon icon-github"> Edit on GitHub</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="new-methods-inside-the-streams-api">New Methods inside the Streams API<a class="headerlink" href="#new-methods-inside-the-streams-api" title="Permanent link">&para;</a></h1>
+<h2 id="stream">Stream<a class="headerlink" href="#stream" title="Permanent link">&para;</a></h2>
+<p>What are the news from Java8 to Java9?</p>
+<h3 id="default-stream-dropwhilepredicate-super-t-predicate">default Stream<T> dropWhile(Predicate&lt;? super T&gt; predicate)<a class="headerlink" href="#default-stream-dropwhilepredicate-super-t-predicate" title="Permanent link">&para;</a></h3>
+<pre><code class="java">  public static void main(String[] args) {
+    workOn(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+    workOn(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});
+    workOn(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});
+    workOn(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});
+    workOnParallel(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+    workOnParallel(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});
+    workOnParallel(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});
+    workOnParallel(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});
+  }
+
+  private static void workOn(final Integer[] integers) {
+    final List&lt;Integer&gt; collect = Stream
+        .of(integers)
+        .dropWhile(integer -&gt; integer &gt; 5)
+        .collect(Collectors.toList());
+    System.out.println(&quot;dropWhile.isEmpty() = &quot; + collect.isEmpty());
+    System.out.println(&quot;dropWhile = &quot; + collect);
+  }
+  private static void workOnParallel(final Integer[] integers) {
+    final List&lt;Integer&gt; collect = Stream
+        .of(integers)
+        .parallel()
+        .dropWhile(integer -&gt; integer &gt; 5)
+        .collect(Collectors.toList());
+    System.out.println(&quot;dropWhileParallel.isEmpty() = &quot; + collect.isEmpty());
+    System.out.println(&quot;dropWhileParallel = &quot; + collect);
+  }
+</code></pre>
+
+<p>The result will be.</p>
+<pre><code class="text">dropWhile.isEmpty() = false
+dropWhile = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+dropWhile.isEmpty() = false
+dropWhile = [5, 4, 3, 2, 1]
+dropWhile.isEmpty() = false
+dropWhile = [1, 9, 2, 8, 3, 7, 4, 6, 5]
+dropWhile.isEmpty() = false
+dropWhile = [1, 8, 2, 7, 3, 6, 4, 5]
+dropWhileParallel.isEmpty() = false
+dropWhileParallel = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+dropWhileParallel.isEmpty() = false
+dropWhileParallel = [5, 4, 3, 2, 1]
+dropWhileParallel.isEmpty() = false
+dropWhileParallel = [1, 9, 2, 8, 3, 7, 4, 6, 5]
+dropWhileParallel.isEmpty() = false
+dropWhileParallel = [1, 8, 2, 7, 3, 6, 4, 5]
+</code></pre>
+
+<h3 id="default-stream-takewhilepredicate-super-t-predicate">default Stream<T> takeWhile(Predicate&lt;? super T&gt; predicate)<a class="headerlink" href="#default-stream-takewhilepredicate-super-t-predicate" title="Permanent link">&para;</a></h3>
+<pre><code class="java">  public static void main(String[] args) {
+    workOn(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+    workOn(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});
+    workOn(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});
+    workOn(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});
+    workOnParallel(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9});
+    workOnParallel(new Integer[]{9, 8, 7, 6, 5, 4, 3, 2, 1});
+    workOnParallel(new Integer[]{1, 9, 2, 8, 3, 7, 4, 6, 5});
+    workOnParallel(new Integer[]{9, 1, 8, 2, 7, 3, 6, 4, 5});
+  }
+
+  private static void workOn(final Integer[] integers) {
+    final List&lt;Integer&gt; collect = Stream
+        .of(integers)
+        .takeWhile(integer -&gt; integer &gt; 5)
+        .collect(Collectors.toList());
+    System.out.println(&quot;takeWhile.isEmpty() = &quot; + collect.isEmpty());
+    System.out.println(&quot;takeWhile = &quot; + collect);
+  }
+  private static void workOnParallel(final Integer[] integers) {
+    final List&lt;Integer&gt; collect = Stream
+        .of(integers)
+        .parallel()
+        .takeWhile(integer -&gt; integer &gt; 5)
+        .collect(Collectors.toList());
+    System.out.println(&quot;takeWhileParallel.isEmpty() = &quot; + collect.isEmpty());
+    System.out.println(&quot;takeWhileParallel = &quot; + collect);
+  }
+</code></pre>
+
+<pre><code class="text">takeWhile.isEmpty() = true
+takeWhile = []
+takeWhile.isEmpty() = false
+takeWhile = [9, 8, 7, 6]
+takeWhile.isEmpty() = true
+takeWhile = []
+takeWhile.isEmpty() = false
+takeWhile = [9]
+takeWhileParallel.isEmpty() = true
+takeWhileParallel = []
+takeWhileParallel.isEmpty() = false
+takeWhileParallel = [9, 8, 7, 6]
+takeWhileParallel.isEmpty() = true
+takeWhileParallel = []
+takeWhileParallel.isEmpty() = false
+takeWhileParallel = [9]
+</code></pre>
+
+<h3 id="public-static-stream-ofnullablet-t">public static<T> Stream<T> ofNullable(T t)<a class="headerlink" href="#public-static-stream-ofnullablet-t" title="Permanent link">&para;</a></h3>
+<h3 id="public-static-stream-iteratet-seed-predicate-super-t-hasnext-unaryoperator-next">public static<T> Stream<T> iterate(T seed, Predicate&lt;? super T&gt; hasNext, UnaryOperator<T> next)<a class="headerlink" href="#public-static-stream-iteratet-seed-predicate-super-t-hasnext-unaryoperator-next" title="Permanent link">&para;</a></h3>
+<h2 id="collectors">Collectors<a class="headerlink" href="#collectors" title="Permanent link">&para;</a></h2>
+<h3 id="public-static-collector-flatmappingfunction-super-t-extends-stream-extends-u-mappercollector-super-u-a-r-downstream">public static <T, U, A, R> Collector<T, ?, R> flatMapping(Function&lt;? super T, ? extends Stream&lt;? extends U&gt;&gt; mapper,Collector&lt;? super U, A, R&gt; downstream)<a class="headerlink" href="#public-static-collector-flatmappingfunction-super-t-extends-stream-extends-u-mappercollector-super-u-a-r-downstream" title="Permanent link">&para;</a></h3>
+<h3 id="public-static-collector-filteringpredicate-super-t-predicate-collector-super-t-a-r-downstream">public static <T, A, R> Collector<T, ?, R> filtering(Predicate&lt;? super T&gt; predicate, Collector&lt;? super T, A, R&gt; downstream)<a class="headerlink" href="#public-static-collector-filteringpredicate-super-t-predicate-collector-super-t-a-r-downstream" title="Permanent link">&para;</a></h3>
+<h2 id="intstream">IntStream<a class="headerlink" href="#intstream" title="Permanent link">&para;</a></h2>
+<p>same as Stream</p>
+<h3 id="public-static-intstream-iterateint-seed-intpredicate-hasnext-intunaryoperator-next">public static IntStream iterate(int seed, IntPredicate hasNext, IntUnaryOperator next)<a class="headerlink" href="#public-static-intstream-iterateint-seed-intpredicate-hasnext-intunaryoperator-next" title="Permanent link">&para;</a></h3>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../../java.lang/StrictMath/" class="btn btn-neutral" title="StrictMath"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../../java.lang/StrictMath/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+
+</body>
+</html>
