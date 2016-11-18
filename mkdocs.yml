@@ -1,0 +1,21 @@
+site_name: Java-9.org
+site_url: http://www.java-9.org
+repo_url: https://github.com/java-9/java-9.github.io
+##repo_name: GitHub
+site_author: Sven Ruppert
+google_analytics: ['UA-87714600-1', 'java-9.org']
+remote_branch: master
+
+theme: readthedocs
+markdown_extensions:
+    - toc:
+        permalink: True
+pages:
+- Home: index.md
+- JEP102: jep102.md
+- JEP256: jep256.md
+
+- java.lang: 
+    - 'StrictMath' : 'java.lang/StrictMath.md'
+- java.util.streams: 
+    - 'Streams': 'java.util.streams/Stream.md'
