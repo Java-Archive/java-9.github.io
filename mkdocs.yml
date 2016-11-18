@@ -4,7 +4,6 @@ repo_url: https://github.com/java-9/java-9.github.io
 ##repo_name: GitHub
 site_author: Sven Ruppert
 google_analytics: ['UA-87714600-1', 'java-9.org']
-remote_branch: master
 
 theme: readthedocs
 markdown_extensions:
@@ -13,9 +12,10 @@ markdown_extensions:
 pages:
 - Home: index.md
 - JEP102: jep102.md
-- JEP256: jep256.md
+- JEP259: jep259.md
 
 - java.lang:
+    - 'StackTraceElement' : 'java.lang/StackTraceElement.md'
     - 'StrictMath' : 'java.lang/StrictMath.md'
 - java.util.streams:
     - 'Streams' : 'java.util.streams/Stream.md'
