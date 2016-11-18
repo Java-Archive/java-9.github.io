@@ -19,6 +19,26 @@
             "location": "/#project-layout", 
             "text": "mkdocs.yml    # The configuration file.\ndocs/\n    index.md  # The documentation homepage.\n    ...       # Other markdown pages, images and other files.", 
             "title": "Project layout"
+        }, 
+        {
+            "location": "/jep102/", 
+            "text": "JEP256", 
+            "title": "JEP102"
+        }, 
+        {
+            "location": "/jep102/#jep256", 
+            "text": "", 
+            "title": "JEP256"
+        }, 
+        {
+            "location": "/jep256/", 
+            "text": "JEP256", 
+            "title": "JEP256"
+        }, 
+        {
+            "location": "/jep256/#jep256", 
+            "text": "", 
+            "title": "JEP256"
         }
     ]
 }
