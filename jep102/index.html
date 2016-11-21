@@ -184,7 +184,8 @@ New here in Java 9 is <code>dev/null</code> ;-)</p>
           .redirectOutput(ProcessBuilder.Redirect.INHERIT)
           .redirectError(ProcessBuilder.Redirect.INHERIT);
       final Process start = command.start();
-    } catch (IOException e) {
+      final int waitFor = start.waitFor();
+    } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
 
@@ -207,22 +208,228 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.112-b16, mixed mode)
           .redirectOutput(ProcessBuilder.Redirect.DISCARD)
           .redirectError(ProcessBuilder.Redirect.DISCARD);
       final Process start = command.start();
-    } catch (IOException e) {
+      final int waitFor = start.waitFor();
+    } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
   }
 </code></pre>
 
 <h2 id="javalangprocesshandle">java.lang.ProcessHandle<a class="headerlink" href="#javalangprocesshandle" title="Permanent link">&para;</a></h2>
+<p>With this we got a possibility to manage the process easy and a 
+way to get information's about the started process itself.</p>
+<p>First we will start to get some information's about the process itself we are running.</p>
+<pre><code class="java">    final ProcessHandle current = ProcessHandle.current();
+    final long pid = current.getPid();
+    System.out.println(&quot;pid = &quot; + pid);
+</code></pre>
+
+<p>Here we are asking for the PID of our own process. But we could get easily 
+a Stream of all running processes.</p>
+<pre><code class="java">    final Stream&lt;ProcessHandle&gt; processHandleStream = ProcessHandle.allProcesses();
+
+    processHandleStream.forEach( p -&gt; {
+          final long pid = p.getPid();
+          System.out.println(&quot;pid = &quot; + pid);
+        }
+    );
+</code></pre>
+
+<p>But if you already know the PID, you can get the ProcessHandle for this as well with the method <code>of(..)</code></p>
+<pre><code class="java">    final ProcessHandle processOne = ProcessHandle.of(1).get();
+</code></pre>
+
+<p>From this you could get all child processes as a Stream.</p>
+<pre><code class="java">    processOne.children().forEach(p -&gt; System.out.println(&quot;p = &quot; + p.info() ));
+</code></pre>
+
+<p>Or you could get the father. </p>
+<pre><code class="java">    ProcessHandle
+        .current()
+        .parent()
+        .ifPresent(f -&gt; out.println(&quot;f.getPid() = &quot; + f.getPid()));
+</code></pre>
+
+<p>If you want to have a children plus sub-children of a process, you could use the method <code>descendants()</code></p>
+<pre><code class="java">    ProcessHandle
+        .current()
+        .descendants()
+        .forEach(p -&gt; out.println(&quot;p = &quot; + p.info() ));
+</code></pre>
+
 <h3 id="processhandleinfo">ProcessHandle.Info<a class="headerlink" href="#processhandleinfo" title="Permanent link">&para;</a></h3>
+<p>This class will hold a few informations together , like a status snapshot. 
+All values are wrapped into an Optional. </p>
+<pre><code class="java">      final ProcessHandle start = ProcessHandle.current();
+      final ProcessHandle.Info info = start.info();
+
+      info.commandLine().ifPresent(a -&gt; out.println(&quot;commandLine = &quot; + a));
+      info.command().ifPresent(a -&gt; out.println(&quot;command = &quot; + a));
+      info.arguments().ifPresent(a -&gt; out.println(&quot;arguments = &quot; + asList(a)));
+      info.startInstant().ifPresent(t -&gt; out.println(&quot;startInstant = &quot; + ofInstant(t, systemDefault())));
+      info.totalCpuDuration().ifPresent(d -&gt; out.println(&quot;d [ms] = &quot; + d.toMillis()));
+      info.user().ifPresent(u -&gt; out.println(&quot;user = &quot; + u));
+</code></pre>
+
 <h2 id="javalangprocess">java.lang.Process<a class="headerlink" href="#javalangprocess" title="Permanent link">&para;</a></h2>
-<h3 id="public-boolean-supportsnormaltermination">public boolean supportsNormalTermination()<a class="headerlink" href="#public-boolean-supportsnormaltermination" title="Permanent link">&para;</a></h3>
-<h3 id="public-long-getpid">public long getPid()<a class="headerlink" href="#public-long-getpid" title="Permanent link">&para;</a></h3>
+<p>The class Process itself is since JDK 1.0 available. But still it will be improved.
+With Java9 we got a few more methods to play with.
+A few of them are for information only, like <code>public boolean supportsNormalTermination()</code>
+or <code>public long getPid()</code>. The methods <code>public Stream&lt;ProcessHandle&gt; children()</code> and 
+<code>### public Stream&lt;ProcessHandle&gt; descendants()</code> we know from the class ProcessHandle already.</p>
+<p>To convert into a ProcessHandle we could use the method <code>toHandle()</code> and the delegator <code>info()</code>
+will give us the ProcessHandle.Info instance.</p>
+<p>But there is a really nice new method available.</p>
 <h3 id="public-completablefuture-onexit">public CompletableFuture<Process> onExit()<a class="headerlink" href="#public-completablefuture-onexit" title="Permanent link">&para;</a></h3>
-<h3 id="public-processhandle-tohandle">public ProcessHandle toHandle()<a class="headerlink" href="#public-processhandle-tohandle" title="Permanent link">&para;</a></h3>
-<h3 id="public-processhandleinfo-info">public ProcessHandle.Info info()<a class="headerlink" href="#public-processhandleinfo-info" title="Permanent link">&para;</a></h3>
-<h3 id="public-stream-children">public Stream<ProcessHandle> children()<a class="headerlink" href="#public-stream-children" title="Permanent link">&para;</a></h3>
-<h3 id="public-stream-descendants">public Stream<ProcessHandle> descendants()<a class="headerlink" href="#public-stream-descendants" title="Permanent link">&para;</a></h3>
+<p>With the method <code>onExit()</code>  we are able to create async tree´s of processes. 
+An easy example you could find here <a href="http://bit.ly/JEP102V006">JEP102 - V006</a> </p>
+<p>The basic idea behind ist the concatenation of CompletableFuture´s.
+We will start with the definition of a Function that will transform a <code>String</code> into a 
+<code>Supplier&lt;ProcessBuilder&gt;</code></p>
+<pre><code class="java">  private static Function&lt;String, Supplier&lt;ProcessBuilder&gt;&gt; commandSupplierFunction
+      = command -&gt; () -&gt; new ProcessBuilder()
+      .command(command)
+      .inheritIO()
+      .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+      .redirectError(ProcessBuilder.Redirect.INHERIT);
+
+</code></pre>
+
+<p>With this we could define easily <code>CompletableFuture&lt;Optional&lt;Process&gt;&gt;</code> 
+to describe commands we would like to start.</p>
+<pre><code class="java">        final CompletableFuture&lt;Optional&lt;Process&gt;&gt; commandJConsole = CompletableFuture
+        .supplyAsync(commandSupplierFunction.apply(&quot;jconsole&quot;))
+        .handleAsync(JEP102V006.START_PROCESS);
+
+    final CompletableFuture&lt;Optional&lt;Process&gt;&gt; commandJMC = CompletableFuture
+        .supplyAsync(commandSupplierFunction.apply(&quot;jmc&quot;))
+        .handleAsync(JEP102V006.START_PROCESS);
+
+</code></pre>
+
+<p>Now we have to combine all processes together. Here in this example I want to start 
+concurrently <strong><em>jconsole</em></strong> and <strong><em>Java Mission Control</em></strong>. After I closed both processes 
+I want to start <strong><em>jvisualvm</em></strong>. </p>
+<pre><code class="java">commandJConsole
+        .thenCombineAsync(commandJMC, (jconsoleOpt, jmcOpt) -&gt; {
+          System.out.println(&quot;both proc. are started? &quot; + jconsoleOpt.isPresent() + &quot; - &quot; + jmcOpt.isPresent());
+          final CompletableFuture&lt;Process&gt; jconsoleProcess = jconsoleOpt.get().onExit();
+          final CompletableFuture&lt;Process&gt; jmcProcess = jmcOpt.get().onExit();
+          return jconsoleProcess
+              .thenCombineAsync(jmcProcess, (jconsole, jmc) -&gt; {
+                //both are done -&gt; work on result
+                System.out.println(&quot;jconsole.getPid() = &quot; + jconsole.getPid());
+                System.out.println(&quot;jmc.getPid() = &quot; + jmc.getPid());
+                return CompletableFuture //-&gt; create the next COMMAND_SUPPLIER_FUNCTION
+                    .supplyAsync(commandSupplierFunction.apply(&quot;jvisualvm&quot;));
+              })
+              .thenComposeAsync(cf -&gt; cf); // flatMap
+        })
+        .thenComposeAsync(cf -&gt; cf) // flatMap
+        .handleAsync(JEP102V006.START_PROCESS)  // start third proc
+        .join()
+        .ifPresent(p -&gt; p
+            .onExit()
+            .thenAccept(process -&gt; System.out.println(&quot;process.getPid() = &quot; + process.getPid()))
+            .join()
+        );
+</code></pre>
+
+<p>As you could see, the main task is not tooooooo difficult. 
+But this is not nice, if you have to write this a few times.
+This is a good point to start with a few refactorings.</p>
+<p>Lets start with the way to start a process. This is generic and we could write it like the following.</p>
+<pre><code class="java">public static final BiFunction&lt;ProcessBuilder, Throwable, Optional&lt;Process&gt;&gt; START_PROCESS = (processBuilder, throwable) -&gt; {
+    try {
+      System.out.println(&quot;startProcess = &quot; + processBuilder.command());
+      return Optional.of(processBuilder.start());
+    } catch (IOException e) {
+      e.printStackTrace();
+      return Optional.empty();
+    }
+  };
+</code></pre>
+
+<p>For this we need a way to define and create a <code>Supplier&lt;ProcessBuilder&gt;</code></p>
+<pre><code class="java">  public static final Function&lt;String, Supplier&lt;ProcessBuilder&gt;&gt; COMMAND_SUPPLIER_FUNCTION
+      = command -&gt; () -&gt; new ProcessBuilder()
+      .command(command)
+      .inheritIO()
+      .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+      .redirectError(ProcessBuilder.Redirect.INHERIT);
+</code></pre>
+
+<p>Both together will start the command...</p>
+<pre><code class="java">  public static final Function&lt;String, CompletableFuture&lt;Optional&lt;Process&gt;&gt;&gt; CREATE_AND_START_PROCESS = command
+      -&gt; CompletableFuture
+          .supplyAsync(COMMAND_SUPPLIER_FUNCTION.apply(command))
+          .handleAsync(START_PROCESS);
+
+</code></pre>
+
+<p>Now we will get the little bit complex part. We want to join process-results and start a new one. 
+The most of it is generic and could be extracted into a FunctionalInterface.</p>
+<pre><code class="java">  @FunctionalInterface
+  public interface JoinProcesses extends BiFunction&lt;CompletableFuture&lt;Optional&lt;Process&gt;&gt;,
+                                                    CompletableFuture&lt;Optional&lt;Process&gt;&gt;,
+                                                    CompletableFuture&lt;Optional&lt;Process&gt;&gt;&gt; {
+
+    BiFunction&lt;CompletableFuture&lt;Process&gt;,
+               CompletableFuture&lt;Process&gt;,
+               BiFunction&lt;Process,
+                          Process,
+                          Supplier&lt;ProcessBuilder&gt;&gt;&gt; processResultBiFunction();
+
+    @Override
+    default CompletableFuture&lt;Optional&lt;Process&gt;&gt; apply(CompletableFuture&lt;Optional&lt;Process&gt;&gt; procOptA,
+                                                       CompletableFuture&lt;Optional&lt;Process&gt;&gt; procOptB) {
+      // here more specific exception handlimg or default behavior
+      // System.out.println(&quot;both proc. are started? &quot; + procOptA.isPresent() + &quot; - &quot; + procOptB.isPresent());
+      final CompletableFuture&lt;Process&gt; procA = procOptA.thenComposeAsync(p -&gt; p.get().onExit());
+      final CompletableFuture&lt;Process&gt; procB = procOptB.thenComposeAsync(p -&gt; p.get().onExit());
+      return procA
+          .thenCombineAsync(procB, processResultBiFunction().apply(procA, procB))
+          .handleAsync((processBuilderSupplier, throwable)
+              -&gt; JEP102V006.START_PROCESS.apply(processBuilderSupplier.get(), throwable));
+    }
+  }
+</code></pre>
+
+<p>The part that must be defined by the developer is the method <code>processResultBiFunction()</code>. 
+The task here will be to deal with the two
+results from the processes and decide what would be the next one to start.</p>
+<p>From the developer point of few we have to define two things now.
+First one is, what are the processes to start and combine. </p>
+<pre><code class="java">((JEP102V006.JoinProcesses) () -&gt; processResults)
+        .apply(JEP102V006.CREATE_AND_START_PROCESS.apply(&quot;jconsole&quot;),
+            JEP102V006.CREATE_AND_START_PROCESS.apply(&quot;jmc&quot;))
+        .join()
+        .ifPresent(p -&gt; p
+            .onExit()
+            .thenAccept(process -&gt; System.out.println(&quot;process.getPid() = &quot; + process.getPid()))
+            .join()
+        );
+</code></pre>
+
+<p>And second would be the dealing with the result of the 
+processes and the decision what would be the next command.</p>
+<pre><code class="java">
+private static final BiFunction&lt;CompletableFuture&lt;Process&gt;,
+                                  CompletableFuture&lt;Process&gt;,
+                                  BiFunction&lt;Process,
+                                             Process,
+                                             Supplier&lt;ProcessBuilder&gt;&gt;&gt; processResults
+      = (procCFA, procCFB) -&gt; {
+    final Process procA = procCFA.join();
+    final Process procB = procCFB.join();
+    System.out.println(&quot;jconsole.getPid() = &quot; + procA.getPid());
+    System.out.println(&quot;jmc.getPid() = &quot; + procB.getPid());
+    // work on result....
+    return (process, process2) -&gt; JEP102V006.COMMAND_SUPPLIER_FUNCTION.apply(&quot;jvisualvm&quot;);
+  };
+</code></pre>
+
+<p>Now we are able to define a tree of external processes nearly fully async, based on <strong><em>CompletableFuture</em></strong></p>
               
             </div>
           </div>
