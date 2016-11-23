@@ -11,8 +11,10 @@ markdown_extensions:
         permalink: True
 pages:
 - Home: index.md
-- JEP102: jep102.md
-- JEP259: jep259.md
+- JEP102: JEP102.md
+- JEP259: JEP259.md
+- JEP266: JEP266.md
+
 
 - java.lang:
     - 'StackTraceElement' : 'java.lang/StackTraceElement.md'
