@@ -4,23 +4,31 @@
     
     <url>
      <loc>http://www.java-9.org/</loc>
-     <lastmod>2016-11-22</lastmod>
+     <lastmod>2016-11-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
     <url>
-     <loc>http://www.java-9.org/jep102/</loc>
-     <lastmod>2016-11-22</lastmod>
+     <loc>http://www.java-9.org/JEP102/</loc>
+     <lastmod>2016-11-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
 
     
     <url>
-     <loc>http://www.java-9.org/jep259/</loc>
-     <lastmod>2016-11-22</lastmod>
+     <loc>http://www.java-9.org/JEP259/</loc>
+     <lastmod>2016-11-23</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>http://www.java-9.org/JEP266/</loc>
+     <lastmod>2016-11-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -29,13 +37,13 @@
         
     <url>
      <loc>http://www.java-9.org/java.lang/StackTraceElement/</loc>
-     <lastmod>2016-11-22</lastmod>
+     <lastmod>2016-11-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://www.java-9.org/java.lang/StrictMath/</loc>
-     <lastmod>2016-11-22</lastmod>
+     <lastmod>2016-11-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -45,7 +53,7 @@
         
     <url>
      <loc>http://www.java-9.org/java.util.streams/Stream/</loc>
-     <lastmod>2016-11-22</lastmod>
+     <lastmod>2016-11-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
