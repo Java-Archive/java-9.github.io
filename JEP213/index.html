@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>JEP213 - Java-9.org</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "JEP213";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+  <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-87714600-1', 'java-9.org');
+      ga('send', 'pageview');
+  </script>
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Java-9.org</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../JEP102/">JEP102</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../JEP110/">JEP110</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">JEP213</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#milling-project-coin">Milling Project Coin</a></li>
+                
+                    <li><a class="toctree-l4" href="#allow-safevargs-on-private-instance-methods">Allow @SafeVargs on private instance methods.</a></li>
+                
+                    <li><a class="toctree-l4" href="#allow-effectively-final-variables-to-be-used-as-resources-in-the-try-with-resources-statement">Allow effectively-final variables to be used as resources in the try-with-resources statement.</a></li>
+                
+                    <li><a class="toctree-l4" href="#allow-diamond-with-anonymous-classes-if-the-argument-type-of-the-inferred-type-is-denotable">Allow diamond with anonymous classes if the argument type of the inferred type is denotable.</a></li>
+                
+                    <li><a class="toctree-l4" href="#complete-the-removal-begun-in-java-se-8-of-underscore-from-the-set-of-legal-identifier-names">Complete the removal, begun in Java SE 8, of underscore from the set of legal identifier names.</a></li>
+                
+                    <li><a class="toctree-l4" href="#support-for-private-methods-in-interfaces">Support for private methods in interfaces</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../JEP259/">JEP259</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../JEP264/">JEP264</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../JEP266/">JEP266</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../JEP269/">JEP269</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>java.lang</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../java.lang/StackTraceElement/">StackTraceElement</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../java.lang/StrictMath/">StrictMath</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>java.util.streams</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../java.util.streams/Stream/">Streams</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Java-9.org</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>JEP213</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        
+          <a href="https://github.com/java-9/java-9.github.io" class="icon icon-github"> Edit on GitHub</a>
+        
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="milling-project-coin">Milling Project Coin<a class="headerlink" href="#milling-project-coin" title="Permanent link">&para;</a></h1>
+<p>This <a href="http://openjdk.java.net/jeps/213">JEP</a> is flagged wit <strong>tools / javac</strong>.</p>
+<p>This JEP is divided in five parts. This is more or less a collections of improvements
+of things we got with Java7 and Java8.</p>
+<h3 id="allow-safevargs-on-private-instance-methods">Allow @SafeVargs on private instance methods.<a class="headerlink" href="#allow-safevargs-on-private-instance-methods" title="Permanent link">&para;</a></h3>
+<p>The @SafeVarargs annotation can only be applied to methods which cannot be overridden, 
+like static final or public final methods.
+With Java9 we could do this now with private methods, too.
+Even if they are (static/unstatic) final or not.</p>
+<pre><code class="java">  @SafeVarargs
+  public static &lt;T&gt; void myStaticMethod(T... args) {
+    // don something
+  }  
+
+  @SafeVarargs
+  public final &lt;T&gt; void myUnStaticMethod(T... args) {
+    // don something
+  }
+
+  @SafeVarargs
+  private final &lt;T&gt; void myPrivateUnStaticMethod(T... args) {
+    // don something
+  }
+
+  @SafeVarargs
+  private  &lt;T&gt; void myPrivateUnFinalUnStaticMethod(T... args) {
+    // don something
+  }
+
+  @SafeVarargs
+  private static final &lt;T&gt; void myPrivateStaticMethod(T... args) {
+    // don something
+  }
+
+  @SafeVarargs
+  private  static &lt;T&gt; void myPrivateUnFinalStaticMethod(T... args) {
+    // don something
+  }
+</code></pre>
+
+<h3 id="allow-effectively-final-variables-to-be-used-as-resources-in-the-try-with-resources-statement">Allow effectively-final variables to be used as resources in the try-with-resources statement.<a class="headerlink" href="#allow-effectively-final-variables-to-be-used-as-resources-in-the-try-with-resources-statement" title="Permanent link">&para;</a></h3>
+<p>The target here was the reduction of boilderplate code. In Java7 and Java8 you had to write the following
+lines to deal with an <code>AutoClosable</code></p>
+<pre><code class="java">  public void doSomethingWithOld(ByteArrayInputStream bais) throws Exception {
+    try(final ByteArrayInputStream stream = bais) {
+      final byte[] readAllBytes = stream.readAllBytes();
+    }
+  }  
+</code></pre>
+
+<p>In Java9 you could write it without declaring a new variable. But the attribute must be final or effectively final. </p>
+<blockquote>
+<p><strong><em>Remember:</em></strong>
+A variable or parameter whose value is never changed after it is initialized is effectively final.</p>
+</blockquote>
+<pre><code class="java">
+  public void doSomethingWithOld(ByteArrayInputStream bais) throws Exception {
+    try(final ByteArrayInputStream stream = bais) {
+      final byte[] readAllBytes = stream.readAllBytes();
+    }
+  }  
+
+  public void doSomethingWith(ByteArrayInputStream bais) throws Exception {
+    try(bais) {
+      final byte[] readAllBytes = bais.readAllBytes();
+    }
+  }
+</code></pre>
+
+<h3 id="allow-diamond-with-anonymous-classes-if-the-argument-type-of-the-inferred-type-is-denotable">Allow diamond with anonymous classes if the argument type of the inferred type is denotable.<a class="headerlink" href="#allow-diamond-with-anonymous-classes-if-the-argument-type-of-the-inferred-type-is-denotable" title="Permanent link">&para;</a></h3>
+<h3 id="complete-the-removal-begun-in-java-se-8-of-underscore-from-the-set-of-legal-identifier-names">Complete the removal, begun in Java SE 8, of underscore from the set of legal identifier names.<a class="headerlink" href="#complete-the-removal-begun-in-java-se-8-of-underscore-from-the-set-of-legal-identifier-names" title="Permanent link">&para;</a></h3>
+<h3 id="support-for-private-methods-in-interfaces">Support for private methods in interfaces<a class="headerlink" href="#support-for-private-methods-in-interfaces" title="Permanent link">&para;</a></h3>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../JEP259/" class="btn btn-neutral float-right" title="JEP259"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../JEP110/" class="btn btn-neutral" title="JEP110"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../JEP110/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../JEP259/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>

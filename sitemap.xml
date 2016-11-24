@@ -4,7 +4,7 @@
     
     <url>
      <loc>http://www.java-9.org/</loc>
-     <lastmod>2016-11-24</lastmod>
+     <lastmod>2016-11-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,7 +12,7 @@
     
     <url>
      <loc>http://www.java-9.org/JEP102/</loc>
-     <lastmod>2016-11-24</lastmod>
+     <lastmod>2016-11-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -20,7 +20,15 @@
     
     <url>
      <loc>http://www.java-9.org/JEP110/</loc>
-     <lastmod>2016-11-24</lastmod>
+     <lastmod>2016-11-25</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+    
+
+    
+    <url>
+     <loc>http://www.java-9.org/JEP213/</loc>
+     <lastmod>2016-11-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -28,7 +36,7 @@
     
     <url>
      <loc>http://www.java-9.org/JEP259/</loc>
-     <lastmod>2016-11-24</lastmod>
+     <lastmod>2016-11-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -36,7 +44,7 @@
     
     <url>
      <loc>http://www.java-9.org/JEP264/</loc>
-     <lastmod>2016-11-24</lastmod>
+     <lastmod>2016-11-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -44,7 +52,7 @@
     
     <url>
      <loc>http://www.java-9.org/JEP266/</loc>
-     <lastmod>2016-11-24</lastmod>
+     <lastmod>2016-11-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -52,7 +60,7 @@
     
     <url>
      <loc>http://www.java-9.org/JEP269/</loc>
-     <lastmod>2016-11-24</lastmod>
+     <lastmod>2016-11-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -61,13 +69,13 @@
         
     <url>
      <loc>http://www.java-9.org/java.lang/StackTraceElement/</loc>
-     <lastmod>2016-11-24</lastmod>
+     <lastmod>2016-11-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>http://www.java-9.org/java.lang/StrictMath/</loc>
-     <lastmod>2016-11-24</lastmod>
+     <lastmod>2016-11-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -77,7 +85,7 @@
         
     <url>
      <loc>http://www.java-9.org/java.util.streams/Stream/</loc>
-     <lastmod>2016-11-24</lastmod>
+     <lastmod>2016-11-25</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
