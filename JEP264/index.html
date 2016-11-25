@@ -106,6 +106,8 @@
                 
                     <li><a class="toctree-l4" href="#how-to-declare-this-logger-so-that-it-could-be-used">How to declare this Logger so that it could be used?</a></li>
                 
+                    <li><a class="toctree-l4" href="#why-we-want-to-use-supplier">why we want to use Supplier?</a></li>
+                
             
             </ul>
         
@@ -286,6 +288,55 @@ will be connected with the implementation <code>org.rapidpm.workshop.java09.jep2
 logger = org.rapidpm.workshop.java09.jep264.v001.logger.SysOutLogger@394e1a0f
 loggable = true
 SysOutLogger: x DEBUG: &quot;logmessage&quot;
+</code></pre>
+
+<h2 id="why-we-want-to-use-supplier">why we want to use Supplier?<a class="headerlink" href="#why-we-want-to-use-supplier" title="Permanent link">&para;</a></h2>
+<p>Let´s asume we want to log the following statement.</p>
+<pre><code class="java">String message = &quot;here &quot; + &quot;are &quot; + &quot;expensive &quot; + &quot;ops &quot; + methodToShowThePrice();
+
+  private static String methodToShowThePrice() {
+    System.out.println(&quot; will create instance now.....&quot;);
+    return LocalDateTime.now().toString();
+  }
+</code></pre>
+
+<p>The Logger-Interface provides a few method signatures for the method <code>log(..)</code>
+The simple one is expecting a String as argument.</p>
+<pre><code class="java">        public default void log(Level level, String msg) {
+            log(level, (ResourceBundle) null, msg, (Object[]) null);
+        }
+</code></pre>
+
+<p>This means that you have to wrap the log-call into an if - statement to avoid useless
+creations of the message String.</p>
+<pre><code class="java">    //log something
+    if(logger.isLoggable(System.Logger.Level.DEBUG)) 
+      logger.log(System.Logger.Level.DEBUG, &quot;here &quot; + &quot;are &quot; + &quot;expensive &quot; + &quot;ops &quot; + methodToShowThePrice());
+
+    // Logger not working on this level
+    if(logger.isLoggable(System.Logger.Level.TRACE))
+      logger.log(System.Logger.Level.TRACE, &quot;here &quot; + &quot;are &quot; + &quot;expensive &quot; + &quot;ops &quot; + methodToShowThePrice());
+</code></pre>
+
+<p>But this could be written shorter if you are using Supplier.
+First check the implementation of the log - method that will accept Supplier instead of a String.</p>
+<pre><code class="java">        public default void log(Level level, Supplier&lt;String&gt; msgSupplier) {
+            Objects.requireNonNull(msgSupplier);
+            if (isLoggable(Objects.requireNonNull(level))) {
+                log(level, (ResourceBundle) null, msgSupplier.get(), (Object[]) null);
+            }
+        }
+</code></pre>
+
+<p>Here you could see, that it will be checked if the logger is working with the given level.
+So your code should look like one of the following lines..</p>
+<pre><code class="java">   // version one with on the fly Supplier
+   logger.log(System.Logger.Level.DEBUG, ()-&gt; &quot;here &quot; + &quot;are &quot; + &quot;expensive &quot; + &quot;ops &quot; + methodToShowThePrice());
+
+  //version two with a global defined Supplier
+  private Supplier&lt;String&gt; logMessage = ()-&gt; &quot;here &quot; + &quot;are &quot; + &quot;expensive &quot; + &quot;ops &quot; + methodToShowThePrice();
+
+  logger.log(System.Logger.Level.DEBUG, logMessage);
 </code></pre>
 
 <p>Happy logging......</p>
