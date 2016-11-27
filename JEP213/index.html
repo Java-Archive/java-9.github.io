@@ -216,32 +216,32 @@ With Java9 we could do this now with private methods, too.
 Even if they are (static/unstatic) final or not.</p>
 <pre><code class="java">  @SafeVarargs
   public static &lt;T&gt; void myStaticMethod(T... args) {
-    // don something
+    // do something
   }  
 
   @SafeVarargs
   public final &lt;T&gt; void myUnStaticMethod(T... args) {
-    // don something
+    // do something
   }
 
   @SafeVarargs
   private final &lt;T&gt; void myPrivateUnStaticMethod(T... args) {
-    // don something
+    // do something
   }
 
   @SafeVarargs
   private  &lt;T&gt; void myPrivateUnFinalUnStaticMethod(T... args) {
-    // don something
+    // do something
   }
 
   @SafeVarargs
   private static final &lt;T&gt; void myPrivateStaticMethod(T... args) {
-    // don something
+    // do something
   }
 
   @SafeVarargs
   private  static &lt;T&gt; void myPrivateUnFinalStaticMethod(T... args) {
-    // don something
+    // do something
   }
 </code></pre>
 
