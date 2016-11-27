@@ -23,5 +23,7 @@ pages:
 - java.lang:
     - 'StackTraceElement' : 'java.lang/StackTraceElement.md'
     - 'StrictMath' : 'java.lang/StrictMath.md'
+- java.util:
+    - 'Optional' : 'java.util/Optional.md'
 - java.util.streams:
     - 'Streams' : 'java.util.streams/Stream.md'
