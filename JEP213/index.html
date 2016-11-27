@@ -275,8 +275,87 @@ A variable or parameter whose value is never changed after it is initialized is 
 </code></pre>
 
 <h3 id="allow-diamond-with-anonymous-classes-if-the-argument-type-of-the-inferred-type-is-denotable">Allow diamond with anonymous classes if the argument type of the inferred type is denotable.<a class="headerlink" href="#allow-diamond-with-anonymous-classes-if-the-argument-type-of-the-inferred-type-is-denotable" title="Permanent link">&para;</a></h3>
+<p>This is a small change for Generics. </p>
+<pre><code class="java">  //possible in Java8
+  public &lt;T&gt; MySimpleInterface&lt;T&gt; createInterface(T value) {
+    return () -&gt; value;
+  }
+
+  //NOT possible in Java8
+  public &lt;T&gt; MySimpleClass&lt;T&gt; create(T value) {
+    //return new MySimpleClass&lt;T&gt;() {
+    return new MySimpleClass&lt;&gt;() {
+      @Override
+      public T create() {
+        return value;
+      }
+    };
+  }
+
+
+  private static abstract class MySimpleClass&lt;T&gt; {
+    public abstract T create();
+  }
+
+  private interface MySimpleInterface&lt;T&gt; {
+    T create();
+  }
+</code></pre>
+
+<p>Up to Java8 you could not use a Diamond Operator at the line defining the inner anonymous class.
+But with Java9 the type could be found at this place, and you could use the Diamond Operator.
+But if you are using a Functional Interface, this was "possible" at the place you define the lambda expression.</p>
 <h3 id="complete-the-removal-begun-in-java-se-8-of-underscore-from-the-set-of-legal-identifier-names">Complete the removal, begun in Java SE 8, of underscore from the set of legal identifier names.<a class="headerlink" href="#complete-the-removal-begun-in-java-se-8-of-underscore-from-the-set-of-legal-identifier-names" title="Permanent link">&para;</a></h3>
+<p>This is quite simple to explain. The identifier "_" is not allowed anymore. In combination with other letters yes, 
+but now as identifier alone.  </p>
 <h3 id="support-for-private-methods-in-interfaces">Support for private methods in interfaces<a class="headerlink" href="#support-for-private-methods-in-interfaces" title="Permanent link">&para;</a></h3>
+<p>Now we are able to provide private methods in interfaces. This private methods are accessible 
+inside the interface, not in the implementing claas.</p>
+<p>This will give you the possibility to give your default implementations a better structure compared to the 
+Java8 version. </p>
+<pre><code class="java">@FunctionalInterface
+public interface Service {
+
+  default void workOnDefault() {
+    workA();
+    workB();
+    workC();
+    //somethingHidden();
+  }
+
+  void workA();
+
+  private void workB() {
+    System.out.println(&quot;workB = &quot;);
+  }
+
+  private static void workC() {
+    System.out.println(&quot;workC &quot;);
+  }
+
+  //private void somethingHidden(); // declaration only not possible
+}
+</code></pre>
+
+<p>Have in mind, that a private declaration without a method body is not allowed. May the IDE is not complaining.
+The same with overriding the private method declaration. This will not used from the default implementation.</p>
+<pre><code class="java">    final Service service01 = new Service() {
+
+      @Override
+      public void workA() { }
+
+      private void workB() {
+        //super.workB(); not possible
+        // this implementation will not used from the default
+        System.out.println(&quot;service01.workB() = &quot;);
+      }
+    };
+    service01.workOnDefault();
+</code></pre>
+
+<p>Or as Lambda.</p>
+<pre><code class="java">((Service)() -&gt; { }).workOnDefault();
+</code></pre>
               
             </div>
           </div>
