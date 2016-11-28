@@ -3,7 +3,10 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Sven Ruppert">
   
   <title>JEP266 - Java-9.org</title>
   
@@ -21,6 +24,8 @@
   <script>
     // Current page data
     var mkdocs_page_name = "JEP266";
+    var mkdocs_page_input_path = "JEP266.md";
+    var mkdocs_page_url = "/JEP266/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -150,6 +155,21 @@
           
             <li>
     <ul class="subnav">
+    <li><span>java.util</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../java.util/Optional/">Optional</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <ul class="subnav">
     <li><span>java.util.streams</span></li>
 
         
@@ -202,6 +222,277 @@
                 <h1 id="more-concurrency-updates">More Concurrency Updates<a class="headerlink" href="#more-concurrency-updates" title="Permanent link">&para;</a></h1>
 <p>This <a href="http://openjdk.java.net/jeps/266">JEP</a> is flagged with <strong>core-util.concurrent</strong>.</p>
 <h2 id="publisher-subscriber">Publisher Subscriber<a class="headerlink" href="#publisher-subscriber" title="Permanent link">&para;</a></h2>
+<h3 id="one-subscriber-with-consume">One subscriber with consume<a class="headerlink" href="#one-subscriber-with-consume" title="Permanent link">&para;</a></h3>
+<p>For the beginning just create one Publisher and consume all messages.
+For the Publisher we use the <code>SubmissionPublisher</code> provided by the Java API so we do not have to implement the Interface. 
+ The <code>SubmissionPublisher</code> implements <code>AutoClosable</code> so we can create it in a try with resources and do not have to bother closing it.</p>
+<p>With the method <code>public CompletableFuture&lt;Void&gt; consume(Consumer&lt;? super T&gt; consumer)</code>
+ we can add a Consumer. The Consumer interface is a functional interface so we can easily use lamdas to implement it. In return we get a <code>CompletableFuture&lt;Void&gt;</code> which is done when the <code>Publisher</code> is closed. So we can wait for the completion with <code>get()</code> in the finally block of the try. So we can be sure that the work is done.</p>
+<p>Now we only need to add something to publish to the publisher. This is achieved with the <code>public int submit(T item)</code> method of the <code>SubmissionPublisher</code>.
+ An example of this will look like this:</p>
+<pre><code class="java">public class JEP266v001 {
+  public static void main(String[] args) throws InterruptedException, ExecutionException {
+    CompletableFuture consume = null;
+    try (SubmissionPublisher pup = new SubmissionPublisher&lt;String&gt;()) {
+      consume = pup.consume(System.out::println);
+      IntStream.range(1, 10).forEach(pup::submit);
+    } finally {
+      consume.get();
+    }
+  }
+}
+
+</code></pre>
+
+<p>The output of this code looks like this:</p>
+<pre><code class="text">1
+2
+3
+4
+5
+6
+7
+8
+9
+
+Process finished with exit code 0
+</code></pre>
+
+<p>So all messages where published and printed to stdout.</p>
+<h3 id="writing-your-own-subscriber">Writing your own subscriber<a class="headerlink" href="#writing-your-own-subscriber" title="Permanent link">&para;</a></h3>
+<p>To write your own subscriber you need to implement the interface <code>public static interface Subscriber&lt;T&gt;</code> in the class <code>Flow</code>. For this example lets write a Subscriber which greets the messages on stdout. The Greeter shall have a name so we can identify the subscriber if we add multiple instances to one publisher.</p>
+<pre><code class="java">  public static class GreetingSubscriber implements Flow.Subscriber&lt;String&gt; {
+
+    private final String name;
+    private Flow.Subscription subscription;
+
+    public GreetingSubscriber(String name) {
+      this.name = name;
+    }
+
+    @Override
+    public void onSubscribe(Flow.Subscription subscription) {
+      this.subscription = subscription;
+      subscription.request(1);
+    }
+
+
+    @Override
+    public void onNext(String item) {
+      subscription.request(1);
+      System.out.println(String.format(&quot;%s says: Hello %s&quot;, name, item));
+      System.out.flush();
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+      System.err.print(throwable);
+    }
+
+    @Override
+    public void onComplete() {
+      // nothing to do here
+    }
+  }
+</code></pre>
+
+<p>The method <code>public void onSubscribe(Flow.Subscription subscription)</code> is called when a subscriber subscribes to a publisher. We will get a <code>Subscription</code> object which represents the connection with the publisher. When we subscribe we have to request a number of messages we want to process. This is done via the <code>public void request(long n)</code> method of the <code>Subscription</code>. For this example we will request only one message at a time so wi call: </p>
+<pre><code class="java">subscription.request(1);
+</code></pre>
+
+<p>If we want to get an unbound amount of messages we would have to call: </p>
+<pre><code class="java">subscription.request(Long.MAX_VALUE);
+</code></pre>
+
+<p>But because we only have requested one message we need to request additiional messages when we process a message. Therefor we store the <code>Subscription</code> in a member variable.</p>
+<p>The the work is done in the <code>public void onNext(T item)</code> method. In this method we greet the message and request a new one.</p>
+<pre><code class="java">@Override
+    public void onNext(String item) {
+      subscription.request(1);
+      System.out.println(String.format(&quot;%s says: Hello %s&quot;, name, item));
+      System.out.flush();
+    }
+</code></pre>
+
+<p>Now we have a working subscriber lets add it to a publisher.</p>
+<pre><code class="java"> public static void main(String[] args) throws InterruptedException {
+
+    try (SubmissionPublisher pup = new SubmissionPublisher&lt;String&gt;()) {
+
+      pup.subscribe(new GreetingSubscriber(&quot;Sub1&quot;));
+
+      IntStream.range(1, 10)
+              .boxed()
+              .map(String::valueOf)
+              .forEach(pup::submit);
+
+      System.out.println(&quot;published all the numbers&quot;);
+      Thread.sleep(100 + pup.estimateMaximumLag());
+    }
+  }
+</code></pre>
+
+<p>We start like before and create a <code>SubmissionPublisher</code> in a try with resource.
+Then we subscribe our subscriber to the publisher with  <code>pup.subscribe(new GreetingSubscriber("Sub1"));</code>. Then we add messages to the publisher. But this time we do not get  future to wait for. If we would run the code without a sleep we would only see that we published all numbers but potentially no greeting.</p>
+<pre><code class="text">published all the numbers
+
+Process finished with exit code 0
+</code></pre>
+
+<p>To let the subscribers do work they need time. So lets put the main thread to sleep.
+<code>Thread.sleep(100 + pup.estimateMaximumLag());</code>
+The publisher can give us a estimation on how much lag there most likely will be. We add a little bit of extra time and now we should see the greetings.</p>
+<pre><code class="text">published all the numbers
+Sub1 says: Hello 1
+Sub1 says: Hello 2
+Sub1 says: Hello 3
+Sub1 says: Hello 4
+Sub1 says: Hello 5
+Sub1 says: Hello 6
+Sub1 says: Hello 7
+Sub1 says: Hello 8
+Sub1 says: Hello 9
+
+Process finished with exit code 0
+</code></pre>
+
+<h3 id="adding-a-second-subscriber">Adding a second subscriber<a class="headerlink" href="#adding-a-second-subscriber" title="Permanent link">&para;</a></h3>
+<p>We can add a second subscriber to the same publisher.</p>
+<pre><code class="java"> public static void main(String[] args) throws InterruptedException {
+
+    try (SubmissionPublisher pup = new SubmissionPublisher&lt;String&gt;()) {
+
+      pup.subscribe(new GreetingSubscriber(&quot;Sub1&quot;));
+      pup.subscribe(new GreetingSubscriber(&quot;Sub2&quot;));
+
+      IntStream.range(1, 10)
+              .boxed()
+              .map(String::valueOf)
+              .forEach(pup::submit);
+
+      System.out.println(&quot;published all the numbers&quot;);
+      Thread.sleep(100 + pup.estimateMaximumLag());
+    }
+  }
+</code></pre>
+
+<p>If we run this we see an output like this:</p>
+<pre><code class="text">published all the numbers
+Sub1 says: Hello 1
+Sub2 says: Hello 1
+Sub2 says: Hello 2
+Sub2 says: Hello 3
+Sub2 says: Hello 4
+Sub2 says: Hello 5
+Sub2 says: Hello 6
+Sub2 says: Hello 7
+Sub2 says: Hello 8
+Sub2 says: Hello 9
+Sub1 says: Hello 2
+Sub1 says: Hello 3
+Sub1 says: Hello 4
+Sub1 says: Hello 5
+Sub1 says: Hello 6
+Sub1 says: Hello 7
+Sub1 says: Hello 8
+Sub1 says: Hello 9
+
+Process finished with exit code 0
+
+</code></pre>
+
+<p>Note that the subscribers are not handled in order.</p>
+<h3 id="adding-a-processor">Adding a processor<a class="headerlink" href="#adding-a-processor" title="Permanent link">&para;</a></h3>
+<p>A processor is a subscriber and a supplier in one class. It can be used to process messages e.g. convert them from one type to another.</p>
+<p>To write a processor we extend the <code>SubmissionPublisher&lt;TO&gt;</code> with the type after the conversion and implement <code>Flow.Processor&lt;FROM, TO&gt;</code>  with <code>TO</code> being the same type as in the publisher and <code>FROM</code> being the type we receive. </p>
+<p>For this example if we want to convert an <code>Integer</code> to a <code>String</code> the class has to look something like this.</p>
+<pre><code class="java"> public static class IntToStringProcessor 
+                      extends SubmissionPublisher&lt;String&gt; 
+                      implements Flow.Processor&lt;Integer, String&gt;
+</code></pre>
+
+<p>Because we are a <code>Subscriber</code> we need to implement the method <code>onSubscribe</code>. We do this like we did in the subscribers before:</p>
+<pre><code class="java">    @Override
+      public void onSubscribe(Flow.Subscription subscription) {
+        this.subscription = subscription;
+        this.subscription.request(1);
+      }
+</code></pre>
+
+<p>We store the subscription in a member and request one message.
+ Then we need to implement the <code>onNext</code> method. </p>
+<pre><code class="java">    @Override
+    public void onNext(Integer item) {
+      submit(String.valueOf(item));
+      subscription.request(1);
+    }
+</code></pre>
+
+<p>We recieve one Integer as message, convert it to a String and then submit the String. The <code>submit</code> method is provided by the <code>SubmissionPublisher</code> we extend.
+After submitting the message our work is done and we request another message.
+The whole class looks something like this:</p>
+<pre><code class="java">  public static class IntToStringProcessor extends SubmissionPublisher&lt;String&gt; implements Flow.Processor&lt;Integer, String&gt; {
+
+    private Flow.Subscription subscription;
+
+    @Override
+    public void onSubscribe(Flow.Subscription subscription) {
+      this.subscription = subscription;
+      this.subscription.request(1);
+    }
+
+    @Override
+    public void onNext(Integer item) {
+      submit(String.valueOf(item));
+      subscription.request(1);
+    }
+
+    @Override
+    public void onError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void onComplete() {
+
+    }
+  }
+</code></pre>
+
+<p>Now we can bind our processor into our workflow. This is done by subscribing to the publisher. The subscriber on the other hand subscribes to the processor.</p>
+<pre><code class="java"> public static void main(String[] args) throws InterruptedException {
+
+    try (SubmissionPublisher pup = new SubmissionPublisher&lt;Integer&gt;()) {
+
+      IntToStringProcessor processor = new IntToStringProcessor();
+      pup.subscribe(processor);
+      processor.subscribe(new TestSubscriber(&quot;Sub1&quot;));
+
+      IntStream.range(1, 10)
+              .forEach(pup::submit);
+
+      System.out.println(&quot;published all the numbers&quot;);
+      Thread.sleep(100 + pup.estimateMaximumLag());
+    }
+  }
+</code></pre>
+
+<p>This time we do not convert the <code>IntStream</code>, we let our processor do the work.
+The output of this code looks like this:</p>
+<pre><code class="text">published all the numbers
+Sub1 says: Hello 1
+Sub1 says: Hello 2
+Sub1 says: Hello 3
+Sub1 says: Hello 4
+Sub1 says: Hello 5
+Sub1 says: Hello 6
+Sub1 says: Hello 7
+Sub1 says: Hello 8
+Sub1 says: Hello 9
+
+Process finished with exit code 0
+</code></pre>
+
 <h2 id="javautilconcurrentcompletablefuture-improvements-in-java9">java.util.concurrent.CompletableFuture improvements in Java9<a class="headerlink" href="#javautilconcurrentcompletablefuture-improvements-in-java9" title="Permanent link">&para;</a></h2>
 <h3 id="public-executor-defaultexecutor">public Executor defaultExecutor()<a class="headerlink" href="#public-executor-defaultexecutor" title="Permanent link">&para;</a></h3>
 <h3 id="public-completablefuture-completeasyncsupplier-extends-t-supplier-executor-executor">public CompletableFuture<T> completeAsync(Supplier&lt;? extends T&gt; supplier, Executor executor)<a class="headerlink" href="#public-completablefuture-completeasyncsupplier-extends-t-supplier-executor-executor" title="Permanent link">&para;</a></h3>
@@ -222,7 +513,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../JEP269/" class="btn btn-neutral float-right" title="JEP269"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../JEP269/" class="btn btn-neutral float-right" title="JEP269">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../JEP264/" class="btn btn-neutral" title="JEP264"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -250,7 +541,7 @@
 <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="https://github.com/java-9/java-9.github.io" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../JEP264/" style="color: #fcfcfc;">&laquo; Previous</a></span>
