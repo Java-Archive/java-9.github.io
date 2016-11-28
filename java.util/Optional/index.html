@@ -8,7 +8,7 @@
   
   <meta name="author" content="Sven Ruppert">
   
-  <title>StackTraceElement - Java-9.org</title>
+  <title>Optional - Java-9.org</title>
   
 
   <link rel="shortcut icon" href="../../img/favicon.ico">
@@ -23,9 +23,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "StackTraceElement";
-    var mkdocs_page_input_path = "java.lang/StackTraceElement.md";
-    var mkdocs_page_url = "/java.lang/StackTraceElement/";
+    var mkdocs_page_name = "Optional";
+    var mkdocs_page_input_path = "java.util/Optional.md";
+    var mkdocs_page_url = "/java.util/Optional/";
   </script>
   
   <script src="../../js/jquery-2.1.1.min.js"></script>
@@ -126,22 +126,15 @@
 
         
             
-    <li class="toctree-l1 current">
-        <a class="current" href="./">StackTraceElement</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#new-methods-in-javalangstacktraceelement">New Methods in java.lang.StackTraceElement</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../../java.lang/StackTraceElement/">StackTraceElement</a>
         
     </li>
 
         
             
     <li class="toctree-l1 ">
-        <a class="" href="../StrictMath/">StrictMath</a>
+        <a class="" href="../../java.lang/StrictMath/">StrictMath</a>
         
     </li>
 
@@ -155,8 +148,21 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../../java.util/Optional/">Optional</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Optional</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#new-methods-inside-the-class-optional">New Methods inside the class Optional</a></li>
+                
+                    <li><a class="toctree-l4" href="#public-stream-stream">public Stream stream()</a></li>
+                
+                    <li><a class="toctree-l4" href="#public-optional-orsupplier-extends-optional-extends-t-supplier">public Optional or(Supplier&lt;? extends Optional&lt;? extends T&gt;&gt; supplier)</a></li>
+                
+                    <li><a class="toctree-l4" href="#public-void-ifpresentorelseconsumer-super-t-action-runnable-emptyaction">public void ifPresentOrElse(Consumer&lt;? super T&gt; action, Runnable emptyAction)</a></li>
+                
+            
+            </ul>
         
     </li>
 
@@ -201,11 +207,11 @@
     
       
         
-          <li>java.lang &raquo;</li>
+          <li>java.util &raquo;</li>
         
       
     
-    <li>StackTraceElement</li>
+    <li>Optional</li>
     <li class="wy-breadcrumbs-aside">
       
         
@@ -219,59 +225,36 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="new-methods-in-javalangstacktraceelement">New Methods in java.lang.StackTraceElement<a class="headerlink" href="#new-methods-in-javalangstacktraceelement" title="Permanent link">&para;</a></h1>
-<p>The class itself is inside the JDK since 1.4.</p>
-<p>The StackTraceElement will now have the information about the module and module-version.
-For this they added a new constructor </p>
-<pre><code class="java">public StackTraceElement(String moduleName, 
-                         String moduleVersion,
-                         String declaringClass, 
-                         String methodName,String 
-                         fileName, int lineNumber)
+                <h1 id="new-methods-inside-the-class-optional">New Methods inside the class Optional<a class="headerlink" href="#new-methods-inside-the-class-optional" title="Permanent link">&para;</a></h1>
+<h3 id="public-stream-stream">public Stream<T> stream()<a class="headerlink" href="#public-stream-stream" title="Permanent link">&para;</a></h3>
+<p>In Java8, if a method wrapped a result into an Optional, you had to make sure to test with <code>isPresent</code> 
+if a value was wrapped. After this you could map it to the value itself. The new Method <code>stream</code> will 
+create a Stream with one value if the value is present. If no value is present it will create an emtpy Stream.</p>
+<p>With this you could combine the two steps ( <code>filter</code> and <code>map</code> ) to  one <code>flatMap</code></p>
+<pre><code class="java">    final Function&lt;Integer, Optional&lt;Integer&gt;&gt; function
+        = (value) -&gt; (value &lt;= 4) ? Optional.of(value) : Optional.empty();
+
+    final List&lt;Integer&gt; collectionJava8 = Stream
+        .of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        .map(function) // only to wrap
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toList());
+
+    final List&lt;Integer&gt; collectionJava9 = Stream
+        .of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        .map(function) // only to wrap
+        .flatMap(Optional::stream)
+        .collect(Collectors.toList());
+
+    System.out.println(&quot;collectionJava8 = &quot; + collectionJava8);
+    System.out.println(&quot;collectionJava9 = &quot; + collectionJava9);
+
 </code></pre>
 
-<p>and the new getter methods <code>public String getModuleName()</code> and <code>public String getModuleVersion()</code></p>
-<p>If you want to try this, play with the following.</p>
-<pre><code class="java">public static void main(String[] args) {
-    try {
-      throw new RuntimeException(&quot;and go&quot;);
-    } catch (Exception e) {
-      final StackTraceElement[] stackTrace = e.getStackTrace();
-      for (StackTraceElement stackTraceElement : stackTrace) {
-        final String moduleName = stackTraceElement.getModuleName();
-        final String moduleVersion = stackTraceElement.getModuleVersion();
-        System.out.println(&quot;moduleVersion = &quot; + moduleVersion);
-        System.out.println(&quot;moduleName = &quot; + moduleName);
-        System.out.println(stackTraceElement.getClassName() + &quot; - &quot; + stackTraceElement.getMethodName());
-      }
-    }
-  }
-</code></pre>
-
-<p>The output at may machine was the following.</p>
-<pre><code class="text">moduleVersion = null
-moduleName = null
-org.rapidpm.workshop.java09.java.lang.StackTraceElementV001 - main
-moduleVersion = 9-ea
-moduleName = java.base
-jdk.internal.reflect.NativeMethodAccessorImpl - invoke0
-moduleVersion = 9-ea
-moduleName = java.base
-jdk.internal.reflect.NativeMethodAccessorImpl - invoke
-moduleVersion = 9-ea
-moduleName = java.base
-jdk.internal.reflect.DelegatingMethodAccessorImpl - invoke
-moduleVersion = 9-ea
-moduleName = java.base
-java.lang.reflect.Method - invoke
-moduleVersion = null
-moduleName = null
-com.intellij.rt.execution.application.AppMain - main
-</code></pre>
-
-<p>The interesting thing here is, that the first and the last triple is without 
-a module -version and -name.</p>
-<p>Try to find out, why ;-) </p>
+<h3 id="public-optional-orsupplier-extends-optional-extends-t-supplier">public Optional<T> or(Supplier&lt;? extends Optional&lt;? extends T&gt;&gt; supplier)<a class="headerlink" href="#public-optional-orsupplier-extends-optional-extends-t-supplier" title="Permanent link">&para;</a></h3>
+<p>In Java8  </p>
+<h3 id="public-void-ifpresentorelseconsumer-super-t-action-runnable-emptyaction">public void ifPresentOrElse(Consumer&lt;? super T&gt; action, Runnable emptyAction)<a class="headerlink" href="#public-void-ifpresentorelseconsumer-super-t-action-runnable-emptyaction" title="Permanent link">&para;</a></h3>
               
             </div>
           </div>
@@ -279,10 +262,10 @@ a module -version and -name.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../StrictMath/" class="btn btn-neutral float-right" title="StrictMath">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../../java.util.streams/Stream/" class="btn btn-neutral float-right" title="Streams">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../../JEP269/" class="btn btn-neutral" title="JEP269"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../../java.lang/StrictMath/" class="btn btn-neutral" title="StrictMath"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -310,10 +293,10 @@ a module -version and -name.</p>
           <a href="https://github.com/java-9/java-9.github.io" class="icon icon-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../../JEP269/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../../java.lang/StrictMath/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../StrictMath/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../../java.util.streams/Stream/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
